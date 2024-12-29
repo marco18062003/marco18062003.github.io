@@ -1,76 +1,51 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestión de Inventarios y Finanzas</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="script.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INICIO</title>
+    <link rel="icon" href="Assents/icon/logo1.svg" type="image/x-icon">
+    <link rel="stylesheet" href="Css/styles1.css">
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header class="header">
-    <div class="logo">Mi Inventario</div>
-    <div class="user-info">
-      <span>Bienvenido, Usuario</span>
-      <button class="logout-btn">Cerrar sesión</button>
-    </div>
-  </header>
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <nav>
-      <ul>
-        <li><a href="#" id="inventario-tab">Inventario</a></li>
-        <li><a href="#" id="finanzas-tab">Finanzas</a></li>
-        <li><a href="#" id="reportes-tab">Reportes</a></li>
-      </ul>
-    </nav>
-  </aside>
-
-  <!-- MAIN CONTENT -->
-  <main class="main-content">
-    <section id="inventario" class="section active">
-      <h2>Lista de productos</h2>
-      <!-- Campo de búsqueda -->
-      <input type="text" id="search-input" placeholder="Buscar productos..." class="search-input">
-      <table id="productos-table">
-        <thead>
-          <tr>
-            <th>Producto</th>
-            <th>Referencia</th>
-            <th>Precio Unitario</th>
-            <th>Cantidad</th>
-            <th>Precio Total</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Productos se agregarán dinámicamente -->
-        </tbody>
-      </table>
-      <button id="add-product-btn">Agregar Producto</button>
+    <!-- Tabla de Enlaces -->
+    <section id="links" class="links-section">
+        <div class="container">
+            <h2>Links</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>NOMBRE</th>
+                        <th>LINK</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Home</td>
+                        <td><a href="page/index.html" target="_blank">Go to Home</a></td>
+                    </tr>
+                    <tr>
+                        <td>Vocabulario</td>
+                        <td><a href="page/vocabulario.html" target="_blank">ingresar</a></td>
+                    </tr>
+                    <tr>
+                        <td>Basegit</td>
+                        <td><a href="page/basegit.html" target="_blank">ingresar</a></td>
+                    </tr>
+                    <tr>
+                        <td>x1</td>
+                        <td><a href="page/portfolio.html" target="_blank">ingresar</a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </section>
 
-    <section id="finanzas" class="section">
-      <h2>Gestión Financiera</h2>
-      <div class="financial-actions">
-        <button id="add-income-btn">Registrar Ingreso</button>
-        <button id="add-expense-btn">Registrar Gasto</button>
-      </div>
-      <div id="financial-summary">
-        <!-- Resumen financiero dinámico -->
-      </div>
-    </section>
-
-    <section id="reportes" class="section">
-      <h2>Reportes</h2>
-      <div id="report-summary">
-        <!-- Resúmenes y gráficos de reportes -->
-      </div>
-    </section>
-  </main>
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2024 John Doe | DATOS</p>
+    </footer>
 
 </body>
 </html>

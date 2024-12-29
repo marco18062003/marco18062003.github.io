@@ -1,0 +1,120 @@
+/* style.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+.container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+h2.section-title {
+    font-size: 24px;
+    color: #007BFF;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+h3 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    text-align: left;
+    width: 100%;
+    max-width: 800px;
+}
+
+.section {
+    width: 100%;
+    margin-bottom: 40px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.code-block {
+    margin-bottom: 20px;
+    background-color: #2e2e2e;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    color: #f8f8f2;
+}
+
+h4 {
+    margin-bottom: 10px;
+    color: #f8f8f2;
+}
+
+pre {
+    margin: 0;
+    font-family: "Courier New", monospace;
+    font-size: 16px;
+    overflow: auto;
+    white-space: pre-wrap; /* Permite que el código se ajuste */
+}
+
+button {
+    padding: 12px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+    transform: scale(1.1);
+}
+
+button i {
+    margin-right: 8px;
+}
+
+.status {
+    margin-top: 10px;
+    font-size: 14px;
+    color: green;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.status.show {
+    opacity: 1;
+}
