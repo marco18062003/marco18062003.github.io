@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comics de Iron Man</title>
+
+  <!-- Vinculamos el archivo CSS -->
+  <link rel="stylesheet" href="../Css/unipdf.css">
+
+  <!-- Agregamos Font Awesome para iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
+  <!-- Botón para cambiar el tema -->
+  <button id="theme-toggle" class="theme-toggle">
+    <i class="fas fa-adjust"></i> Cambiar Tema
+  </button>
+
+  <!-- Encabezado con logo y título -->
+  <header class="header">
+    <img src="https://logos-world.net/wp-content/uploads/2020/12/Iron-Man-Emblem.png" alt="Logo Iron Man" class="logo">
+    <h1>Comics de Iron Man</h1>
+  </header>
+
+  <!-- Botón para ocultar/mostrar la tabla -->
+  <button id="toggle-table" class="toggle-table-btn">
+    <i class="fas fa-chevron-down"></i> Mostrar Cómics
+  </button>
+
+  <!-- Tabla de selección de Comics -->
+  <div id="comic-table-container" class="comic-selector">
+    <br>
+    <h2>ArchivoS</h2>
+
+    <!-- Tabla de cómics -->
+    <table class="comic-table">
+      <thead>
+        <tr>
+          <th>Número</th>
+          <th>Nombre del Archivo</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Comic 1</td>
+          <td><button id="comic1-btn" class="comic-btn">Seleccionar</button></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>Comic 2</td>
+          <td><button id="comic2-btn" class="comic-btn">Seleccionar</button></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>Comic 3</td>
+          <td><button id="comic3-btn" class="comic-btn">Seleccionar</button></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>Comic 4</td>
+          <td><button id="comic4-btn" class="comic-btn">Seleccionar</button></td>
+        </tr>
+        <!-- Más filas según sea necesario -->
+      </tbody>
+    </table>
+  </div>
+  
+
+  <!-- Sección de Comic con PDF dinámico -->
+  <section class="comic-section">
+    <h2 class="comic-title">Selecciona un comic</h2>
+    <iframe id="comic-frame" src="" type="application/pdf" width="100%" height="600"></iframe>
+  </section>
+
+  <!-- Pie de página -->
+  <footer>
+    <p>&copy; 2025 Iron Man Comics. Todos los derechos reservados.</p>
+  </footer>
+
+  <!-- Archivo JS de funcionalidad existente -->
+  <script src="../Js/unipdf.js"></script>
+
+  <!-- Nuevo archivo JS para ocultar/mostrar la tabla -->
+  <script src="../Js/unipdf1.js"></script>
+
+</body>
+</html>

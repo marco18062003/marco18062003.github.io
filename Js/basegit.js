@@ -1,23 +1,25 @@
-// script.js
+document.addEventListener('DOMContentLoaded', function () {
+    // Configurar menús desplegables para clic
+    const dropdowns = document.querySelectorAll('.dropdown');
 
-// Efecto para resaltar las filas cuando el ratón pasa por encima
-document.querySelectorAll('tr').forEach(row => {
-    row.addEventListener('mouseover', () => {
-        row.style.backgroundColor = '#e9f5ff';
+    dropdowns.forEach(function (dropdown) {
+        const button = dropdown.querySelector('.dropbtn');
+        
+        button.addEventListener('click', function () {
+            const content = dropdown.querySelector('.dropdown-content');
+            content.style.display = (content.style.display === 'block') ? 'none' : 'block';
+        });
     });
 
-    row.addEventListener('mouseout', () => {
-        row.style.backgroundColor = '';
-    });
-});
+    // Agregar cierre de los menús cuando se haga clic fuera de ellos
+    window.addEventListener('click', function (e) {
+        dropdowns.forEach(function (dropdown) {
+            const button = dropdown.querySelector('.dropbtn');
+            const content = dropdown.querySelector('.dropdown-content');
 
-// Animación para mostrar las filas de la tabla con un retraso
-document.addEventListener('DOMContentLoaded', () => {
-    const tableRows = document.querySelectorAll('tbody tr');
-    tableRows.forEach((row, index) => {
-        setTimeout(() => {
-            row.style.opacity = 1;
-            row.style.transition = "opacity 0.6s ease";
-        }, index * 100); // Animación escalonada
+            if (!dropdown.contains(e.target)) {
+                content.style.display = 'none';
+            }
+        });
     });
 });

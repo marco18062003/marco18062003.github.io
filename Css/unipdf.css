@@ -1,0 +1,175 @@
+/* Estilos generales */
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+/* Estilos del encabezado */
+.header {
+  text-align: center;
+  padding: 20px;
+  background-color: #20232a;
+  color: white;
+}
+
+.header .logo {
+  width: 100px;
+  margin-bottom: 10px;
+}
+
+.header h1 {
+  font-size: 36px;
+  margin: 0;
+  font-weight: bold;
+}
+
+/* Estilos del botón de cambio de tema */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  font-size: 16px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
+}
+
+.theme-toggle:hover {
+  background-color: #0056b3;
+}
+
+/* Estilos para el botón de mostrar/ocultar tabla */
+.toggle-table-btn {
+  display: block;
+  margin: 20px auto;
+  padding: 12px 20px;
+  font-size: 16px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.toggle-table-btn:hover {
+  background-color: #218838;
+  transform: translateY(-3px);
+}
+
+.toggle-table-btn:active {
+  background-color: #1e7e34;
+  transform: translateY(2px);
+}
+
+/* Estilos de la tabla */
+.comic-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+  transition: max-height 0.3s ease-out;
+  overflow: hidden;
+  max-height: 500px; /* Limita el tamaño por defecto */
+}
+
+.comic-selector.hidden {
+  max-height: 0; /* Oculta la tabla */
+}
+
+.comic-selector h2 {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Estilos de la tabla */
+.comic-table {
+  width: 80%;
+  margin: 0 auto;
+  border-collapse: collapse;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.comic-table th, .comic-table td {
+  padding: 12px 20px;
+  text-align: center;
+  border: 1px solid #ddd;
+}
+
+.comic-table th {
+  background-color: #007BFF;
+  color: white;
+}
+
+.comic-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.comic-table tr:hover {
+  background-color: #e9ecef;
+  cursor: pointer;
+}
+
+/* Estilos de los botones */
+.comic-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.comic-btn:hover {
+  background-color: #218838;
+  transform: translateY(-3px);
+}
+
+.comic-btn:active {
+  background-color: #1e7e34;
+  transform: translateY(2px);
+}
+
+/* Estilos de la sección del comic */
+.comic-section {
+  background-color: #fff;
+  padding: 40px 20px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 40px;
+}
+
+.comic-title {
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Estilo del iframe */
+iframe {
+  border: none;
+  border-radius: 10px;
+}
+
+/* Estilos del pie de página */
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #20232a;
+  color: white;
+  margin-top: 40px;
+}

@@ -1,0 +1,76 @@
+/* Estilos globales */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+  }
+  
+  h1, h2 {
+    text-align: center;
+    color: #D32F2F;  /* Color rojo Iron Man */
+  }
+  
+  /* Estilos del encabezado */
+  header {
+    background-color: #212121;
+    color: white;
+    padding: 20px 0;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  header img {
+    width: 60px;
+    vertical-align: middle;
+    margin-right: 10px;
+  }
+  
+  header h1 {
+    display: inline;
+    font-size: 2.5rem;
+  }
+  
+  /* Estilo de las secciones */
+  .comic-section {
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    width: 90%;
+    max-width: 1200px;
+  }
+  
+  .comic-section iframe {
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+  }
+  
+  .comic-title {
+    text-align: center;
+    font-size: 2rem;
+    color: #1976D2; /* Color azul para los títulos */
+    margin-bottom: 20px;
+  }
+  
+  /* Estilo para el pie de página */
+  footer {
+    background-color: #212121;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  /* Responsividad */
+  @media (max-width: 768px) {
+    .comic-section iframe {
+      height: 600px;
+    }
+  }
+  

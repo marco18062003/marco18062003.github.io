@@ -1,77 +1,121 @@
-/* Estilos generales */
+/* Resetear márgenes y padding para todos los elementos */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Body */
+/* Estilos generales */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f7f6;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f8f9fa;
     color: #333;
     line-height: 1.6;
 }
 
-/* Sección de Enlaces */
-.links-section {
-    padding: 40px;
-    background-color: #fff;
-    margin: 20px auto;
+/* Contenedor principal */
+.container {
+    width: 90%;
     max-width: 1200px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 0 auto;
 }
 
-.links-section .container {
-    width: 80%;
-    margin: 0 auto;
+/* Encabezado */
+.header {
+    background-color: #2C3E50;
+    color: white;
+    padding: 50px 0;
+    text-align: center;
+    border-bottom: 5px solid #2980B9;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+/* Estilos de la tabla */
+.links-section {
+    padding: 50px 0;
+    background-color: #fff;
 }
 
 h2 {
     font-size: 2rem;
-    color: #003366;
+    color: #2C3E50;
     margin-bottom: 20px;
+    font-weight: 500;
     text-align: center;
 }
 
-/* Estilos de la tabla */
+/* Tabla */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #fff;
 }
 
 th, td {
-    padding: 12px;
+    padding: 15px;
     text-align: left;
-    border: 1px solid #ddd;
+    font-size: 1.1rem;
+    font-weight: 500;
 }
 
 th {
-    background-color: #003366;
+    background-color: #2980B9;
     color: white;
+    text-transform: uppercase;
 }
 
-td {
-    background-color: #f9f9f9;
+tr:nth-child(even) {
+    background-color: #f1f1f1;
+}
+
+tr:hover {
+    background-color: #dfe6e9;
+    transition: background-color 0.3s ease;
 }
 
 a {
-    color: #003366;
+    color: #3498db;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 600;
+    transition: color 0.3s ease;
 }
 
 a:hover {
-    color: #f4a261;
+    color: #2980b9;
 }
 
-/* Footer */
-footer {
-    background-color: #003366;
+/* Estilos del pie de página */
+.footer {
+    background-color: #2C3E50;
     color: white;
+    padding: 30px 0;
     text-align: center;
-    padding: 15px;
-    margin-top: 40px;
+    font-size: 1rem;
+}
+
+/* Estilos Responsivos */
+@media screen and (max-width: 768px) {
+    .header h1 {
+        font-size: 1.8rem;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+
+    table {
+        font-size: 0.9rem;
+    }
+
+    th, td {
+        padding: 10px;
+    }
 }
