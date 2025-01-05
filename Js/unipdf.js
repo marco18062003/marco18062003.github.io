@@ -15,7 +15,7 @@ function loadComic(pdfUrl) {
 comic1Btn.addEventListener('click', () => loadComic('xxx.pdf'));
 comic2Btn.addEventListener('click', () => loadComic('2xxx.pdf'));
 comic3Btn.addEventListener('click', () => loadComic('xxx.pdf'));
-comic4Btn.addEventListener('click', () => loadComic('https://www.nature.com/articles/s41574-019-0310-7.pdf'));
+comic4Btn.addEventListener('click', () => loadComic('../Assents/universidad/Semestre - copia (2)/Mecanica_clasica_i/fisica vol i.pdf'));
 
 
 // Funcionalidad para cambiar el tema
