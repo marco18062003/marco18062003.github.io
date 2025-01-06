@@ -4,6 +4,7 @@ const comic1Btn = document.getElementById('comic1-btn');
 const comic2Btn = document.getElementById('comic2-btn');
 const comic3Btn = document.getElementById('comic3-btn');
 const comic4Btn = document.getElementById('comic4-btn');
+const comic5Btn = document.getElementById('comic5-btn');
 const themeToggle = document.getElementById('theme-toggle');
 
 // Función para cambiar el contenido del iframe
@@ -12,10 +13,11 @@ function loadComic(pdfUrl) {
 }
 
 // Agregar eventos a los botones de selección de comics
-comic1Btn.addEventListener('click', () => loadComic('xxx.pdf'));
-comic2Btn.addEventListener('click', () => loadComic('2xxx.pdf'));
-comic3Btn.addEventListener('click', () => loadComic('xxx.pdf'));
-comic4Btn.addEventListener('click', () => loadComic('../Assents/universidad/Semestre - copia (2)/Mecanica_clasica_i/fisica vol i.pdf'));
+comic1Btn.addEventListener('click', () => loadComic('../Assents/universidad/Semestre - copia/Prueba de uso y instalacion de tracker y jupyter.pdf'));
+comic2Btn.addEventListener('click', () => loadComic('../Assents/universidad/Semestre - copia (2)/Contextos/calificar_estudiantes.pdf'));
+comic3Btn.addEventListener('click', () => loadComic('../Assents/universidad/Semestre - copia (2)/Contextos/trabajo de observacion.pdf'));
+comic4Btn.addEventListener('click', () => loadComic('../Assents/universidad/Semestre - copia (2)/Mecanica_clasica_i/Ejercicios Mec ́anica Cl ́asica I.pdf'));
+comic5Btn.addEventListener('click', () => loadComic('../Assents/universidad/Semestre - copia (2)/Mecanica_clasica_i/fisica vol i.pdf'));
 
 
 // Funcionalidad para cambiar el tema
