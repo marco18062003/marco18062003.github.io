@@ -173,3 +173,29 @@ footer {
   color: white;
   margin-top: 40px;
 }
+/* Estilo para el campo de búsqueda */
+.search-container {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.search-input {
+  padding: 10px;
+  font-size: 16px;
+  width: 80%;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #007BFF;
+}
+
+/* Resaltar texto encontrado */
+.highlight {
+  background-color: yellow;
+  color: red;
+  font-weight: bold;
+}
