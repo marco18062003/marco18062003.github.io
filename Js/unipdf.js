@@ -1,4 +1,4 @@
-// Elementos del DOM
+// Elementos del de la pagina web de la inipdf donde se guaradn las dirrecione de los archivos
 const comicFrame = document.getElementById('comic-frame');
 const comic1Btn = document.getElementById('comic1-btn');
 const comic2Btn = document.getElementById('comic2-btn');
@@ -25,7 +25,7 @@ themeToggle.addEventListener('click', () => {
   document.body.classList.toggle('dark-theme');
   if (document.body.classList.contains('dark-theme')) {
     document.body.style.backgroundColor = '#212121';
-    document.body.style.color = '#fff';
+    document.body.style.color = '#333';
   } else {
     document.body.style.backgroundColor = '#f4f4f4';
     document.body.style.color = '#333';

@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
       comicTableContainer.classList.toggle('hidden');
       
       if (comicTableContainer.classList.contains('hidden')) {
-        toggleButton.innerHTML = '<i class="fas fa-chevron-down"></i> Mostrar Cómics';
+        toggleButton.innerHTML = '<i class="fas fa-chevron-down"></i> Mostrar';
       } else {
-        toggleButton.innerHTML = '<i class="fas fa-chevron-up"></i> Ocultar Cómics';
+        toggleButton.innerHTML = '<i class="fas fa-chevron-up"></i> Ocultar';
       }
     });
   });
