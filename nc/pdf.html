@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <form id="formulario">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" name="nombre" required><br><br>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <button type="submit">Generar PDF</button>
+    </form>
+
+    <script>
+        document.getElementById("formulario").addEventListener("submit", function (event) {
+            event.preventDefault();  // Evitar que el formulario se envíe de manera tradicional
+
+            // Obtener los valores del formulario
+            const nombre = document.getElementById("nombre").value;
+            const email = document.getElementById("email").value;
+
+            // Crear un nuevo documento PDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Agregar texto al PDF
+            doc.text(`Nombre: ${nombre}`, 10, 10);
+            doc.text(`Email: ${email}`, 10, 20);
+
+            // Descargar el PDF generado
+            doc.save('registro.pdf');
+        });
+    </script>
+</body>
+</html>
