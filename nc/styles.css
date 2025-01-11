@@ -10,7 +10,7 @@ body {
 
 /* Contenedor principal */
 .container {
-    width: 85%;
+    width: 90%;
     max-width: 1200px;
     margin: 30px auto;
     background-color: #222;   /* Fondo oscuro con leve contraste */
@@ -28,6 +28,13 @@ h1 {
     font-weight: bold;
 }
 
+h2 {
+    font-size: 1.8rem;
+    color: #FF5722;
+    margin-top: 30px;
+    text-align: center;
+}
+
 /* Formularios */
 form {
     display: grid;
@@ -42,7 +49,7 @@ label {
     font-weight: 600;
 }
 
-/* Estilo para los inputs y selects */
+/* Estilo para los inputs, selects y botones */
 input, select, button {
     padding: 12px;
     font-size: 1rem;
@@ -133,6 +140,39 @@ img.exercise-img {
 }
 
 /* Media Queries para diseño responsivo */
+@media (max-width: 1024px) {
+    .container {
+        width: 95%;
+        padding: 25px;
+    }
+
+    h1 {
+        font-size: 2.25rem;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+
+    form {
+        gap: 15px;
+    }
+
+    input, button {
+        font-size: 1rem;
+        padding: 12px;
+    }
+
+    table {
+        font-size: 1rem;
+    }
+
+    img.exercise-img {
+        width: 90px;
+        height: 90px;
+    }
+}
+
 @media (max-width: 768px) {
     .container {
         width: 90%;
@@ -141,6 +181,10 @@ img.exercise-img {
 
     h1 {
         font-size: 2rem;
+    }
+
+    h2 {
+        font-size: 1.4rem;
     }
 
     form {
@@ -160,6 +204,10 @@ img.exercise-img {
         width: 80px;
         height: 80px;
     }
+
+    button {
+        padding: 12px 0;
+    }
 }
 
 @media (max-width: 480px) {
@@ -170,6 +218,10 @@ img.exercise-img {
 
     h1 {
         font-size: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.2rem;
     }
 
     label {
@@ -188,5 +240,9 @@ img.exercise-img {
     img.exercise-img {
         width: 70px;
         height: 70px;
+    }
+
+    button {
+        padding: 10px 0;
     }
 }
