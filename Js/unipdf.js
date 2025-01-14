@@ -6,6 +6,7 @@ const comic3Btn = document.getElementById('comic3-btn');
 const comic4Btn = document.getElementById('comic4-btn');
 const comic5Btn = document.getElementById('comic5-btn');
 const comic6Btn = document.getElementById('comic6-btn');
+const comic7Btn = document.getElementById('comic7-btn');
 const themeToggle = document.getElementById('theme-toggle');
 
 // Función para cambiar el contenido del iframe
@@ -20,7 +21,7 @@ comic3Btn.addEventListener('click', () => loadComic('../Assents/universidad/Seme
 comic4Btn.addEventListener('click', () => loadComic('../Assents/universidad/Semestre - copia (2)/Mecanica_clasica_i/Ejercicios Mec ́anica Cl ́asica I.pdf'));
 comic5Btn.addEventListener('click', () => loadComic('../Assents/universidad/Semestre - copia (2)/Mecanica_clasica_i/fisica vol i.pdf'));
 comic6Btn.addEventListener('click', () => loadComic('../Assents/universidad/Semestre - copia (2)/Mecanica_clasica_i/parcial1.pdf'));
-
+comic7Btn.addEventListener('click', () => loadComic('../Assents/universidad/Semestre - copia (2)/Mecanica_clasica_i/Sear_Zemansky_Esapañol.pdf'));
 // Funcionalidad para cambiar el tema
 themeToggle.addEventListener('click', () => {
   document.body.classList.toggle('dark-theme');
