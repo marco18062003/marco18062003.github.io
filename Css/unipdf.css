@@ -94,17 +94,20 @@ body {
 
 /* Estilos de la tabla */
 .comic-table {
-  width: 80%;
+  width: 100%; /* Ajusta el ancho de la tabla al 100% */
+  max-width: 1100px; /* Limita el ancho máximo de la tabla (puedes ajustar este valor) */
   margin: 0 auto;
   border-collapse: collapse;
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  table-layout: fixed;
 }
 
 .comic-table th, .comic-table td {
   padding: 12px 20px;
   text-align: center;
   border: 1px solid #ddd;
+  word-wrap: break-word;
 }
 
 .comic-table th {
@@ -198,4 +201,43 @@ footer {
   background-color: yellow;
   color: red;
   font-weight: bold;
+}
+/* Estilos para pantallas pequeñas (móviles y tabletas) */
+@media screen and (max-width: 768px) {
+  .comic-table {
+    width: 100%; /* La tabla ocupa todo el ancho disponible */
+    display: block; /* Hace que la tabla se comporte como un bloque */
+    overflow-x: auto; /* Permite desplazamiento horizontal si la tabla es demasiado ancha */
+    white-space: nowrap; /* Evita que el texto de las celdas se divida */
+  }
+
+  .comic-table th, .comic-table td {
+    padding: 10px 15px; /* Ajuste de espacio para las celdas */
+    font-size: 14px; /* Reduce el tamaño de la fuente para pantallas más pequeñas */
+  }
+
+  .comic-btn {
+    font-size: 12px; /* Ajusta el tamaño de los botones */
+  }
+
+  .search-input {
+    width: 90%; /* Aumenta el ancho del campo de búsqueda */
+  }
+}
+
+/* Estilo específico para pantallas más pequeñas (móviles) */
+@media screen and (max-width: 480px) {
+  .comic-table th, .comic-table td {
+    font-size: 12px; /* Reduce aún más el tamaño de la fuente en pantallas muy pequeñas */
+    padding: 8px 12px; /* Ajuste más pequeño de los paddings */
+  }
+  
+  .comic-btn {
+    padding: 8px 16px; /* Botones más pequeños */
+    font-size: 12px;
+  }
+
+  .search-input {
+    width: 100%; /* Hace que el campo de búsqueda ocupe todo el ancho en pantallas muy pequeñas */
+  }
 }
