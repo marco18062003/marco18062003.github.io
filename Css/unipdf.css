@@ -176,6 +176,7 @@ footer {
   color: white;
   margin-top: 40px;
 }
+
 /* Estilo para el campo de búsqueda */
 .search-container {
   margin: 20px 0;
@@ -202,6 +203,7 @@ footer {
   color: red;
   font-weight: bold;
 }
+
 /* Estilos para pantallas pequeñas (móviles y tabletas) */
 @media screen and (max-width: 768px) {
   .comic-table {
@@ -239,5 +241,35 @@ footer {
 
   .search-input {
     width: 100%; /* Hace que el campo de búsqueda ocupe todo el ancho en pantallas muy pequeñas */
+  }
+
+  /* Hacer la tabla más amigable en dispositivos pequeños */
+  .comic-table thead {
+    display: none; /* Esconde los encabezados en pantallas pequeñas */
+  }
+
+  .comic-table tr {
+    display: block; /* Hace que cada fila se convierta en un bloque */
+    margin-bottom: 20px; /* Da espacio entre las "tarjetas" */
+  }
+
+  .comic-table td {
+    display: block; /* Hace que cada celda se comporte como un bloque */
+    text-align: left; /* Alinea el texto a la izquierda */
+    padding: 10px; /* Ajuste de espacio en las celdas */
+    border: none; /* Elimina bordes entre celdas */
+    position: relative;
+  }
+
+  .comic-table td::before {
+    content: attr(data-label); /* Muestra el nombre de la columna antes de cada dato */
+    font-weight: bold;
+    position: absolute;
+    left: 10px;
+    top: 10px;
+  }
+
+  .comic-table td:not(:first-child) {
+    padding-left: 40px; /* Da espacio para los "labels" */
   }
 }
