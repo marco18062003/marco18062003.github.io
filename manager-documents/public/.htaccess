@@ -1,0 +1,36 @@
+# public/.htaccess
+
+# Activa el módulo de reescritura de URLs de Apache (necesario para que estas reglas funcionen).
+RewriteEngine On
+
+# Define la base de la reescritura de URLs. Esto le dice a Apache la "raíz" de tu aplicación
+# dentro de la URL del navegador. ¡Es la parte más CRÍTICA y propensa a errores!
+#
+# DEBES AJUSTAR ESTA LÍNEA según cómo accedes a tu carpeta 'public' en el navegador.
+# Ejemplos:
+# - Si accedes: http://localhost/don/manager-documents/public/
+#   Entonces: RewriteBase /don/manager-documents/public/
+# - Si accedes: http://localhost/mi_app_documentos/public/
+#   Entonces: RewriteBase /mi_app_documentos/public/
+# - Si accedes directamente desde la raíz de tu dominio, ej: http://localhost/
+#   (esto significaría que tu carpeta 'public' es directamente la raíz del servidor web)
+#   Entonces: RewriteBase /
+#
+# Basado en tu URL de ejemplo, la siguiente línea debería ser la correcta para ti:
+RewriteBase /don/manager-documents/public/
+
+# --- Reglas de Reescritura ---
+
+# Regla 1: Si la solicitud es para un ARCHIVO REAL que existe en el disco (ej. .css, .js, imágenes).
+# No reescribe la URL; deja que Apache sirva el archivo directamente.
+RewriteCond %{REQUEST_FILENAME} !-f
+
+# Regla 2: Si la solicitud es para un DIRECTORIO REAL que existe en el disco.
+# No reescribe la URL; deja que Apache maneje el directorio (ej. mostrar su contenido si está permitido).
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Regla 3: Si la solicitud NO ES para un archivo ni para un directorio real (Reglas 1 y 2 fallan),
+# entonces reescribe la URL internamente a 'index.php'.
+# El [L] significa "Last" (Última regla), lo que detiene el procesamiento de más reglas.
+# Esto asegura que todas las URLs que no son archivos/directorios físicos sean manejadas por index.php.
+RewriteRule ^ index.php [L]
