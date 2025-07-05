@@ -37,6 +37,12 @@ $editable_text_types = [
     'application/xml',
     'text/xml'
 ];
+
+// --- NUEVA SECCIÓN: Definir los tipos de archivo Excel editables ---
+$excel_types = [
+    'application/vnd.ms-excel', // .xls
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // .xlsx
+];
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -47,6 +53,15 @@ $editable_text_types = [
     <link rel="stylesheet" href="<?php echo $base_path; ?>/css/style.css">
     <style>
         /* Estilos básicos para la tabla si no los tienes en style.css */
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -59,14 +74,6 @@ $editable_text_types = [
         }
         th {
             background-color: #f2f2f2;
-        }
-        .container {
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .message {
             padding: 10px;
@@ -141,10 +148,15 @@ $editable_text_types = [
                                 <a href="<?php echo $base_path; ?>/view_document/<?php echo $doc['id']; ?>" target="_blank">Ver</a> |
                                 <a href="<?php echo $base_path; ?>/download_document/<?php echo $doc['id']; ?>">Descargar</a> |
                                 <?php
-                                // Lógica para mostrar el botón de editar solo para tipos de texto
+                                // Lógica para mostrar el botón de editar texto
                                 if (in_array($doc['file_type'], $editable_text_types)):
                                 ?>
                                     <a href="<?php echo htmlspecialchars($base_path); ?>/edit_text_document/<?php echo $doc['id']; ?>">Editar</a> |
+                                <?php
+                                // --- NUEVA LÓGICA: Lógica para mostrar el botón de editar Excel ---
+                                elseif (in_array($doc['file_type'], $excel_types)):
+                                ?>
+                                    <a href="<?php echo htmlspecialchars($base_path); ?>/edit_excel_document/<?php echo $doc['id']; ?>">Editar (Solo Datos)</a> |
                                 <?php endif; ?>
                                 <a href="<?php echo htmlspecialchars($base_path); ?>/delete_document/<?php echo $doc['id']; ?>" onclick="return confirm('¿Estás seguro de que quieres eliminar este documento?');">Eliminar</a>
                             </td>
@@ -172,4 +184,4 @@ $editable_text_types = [
         <p><a href="<?php echo $base_path; ?>/logout">Cerrar Sesión</a></p>
     </div>
 </body>
-</html>s
+</html>

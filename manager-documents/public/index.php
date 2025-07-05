@@ -2,6 +2,7 @@
 // public/index.php
 
 session_start();
+require_once __DIR__ . '/../vendor/autoload.php'; // ¡Esta línea es CRUCIAL y nueva!
 
 // 1. Incluir archivos de configuración y modelos
 require_once __DIR__ . '/../app/Config/db.php';
@@ -16,7 +17,7 @@ if ($public_pos !== false) {
     $base_path = substr($request_uri_path, 0, $public_pos + strlen('/public'));
 } else {
     // Fallback manual si '/public' no está en la URL. ¡Asegúrate de que esta ruta sea correcta!
-    $base_path = '/don/manager-documents/public'; 
+    $base_path = '/don/manager-documents/public';
 }
 
 // 3. Obtener la URL solicitada limpia
@@ -87,7 +88,7 @@ elseif ($request_uri === '/uploads') {
             'application/x-rar-compressed', // Alternativa para .cbr
             'application/x-cbz',          // Para .cbz
             'application/zip',            // Alternativa para .cbz (si .cbz usa zip)
-            // Añadir tipos para Excel si los necesitas:
+            // Tipos para Excel
             'application/vnd.ms-excel', // .xls
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
             // Generalmente, NO incluimos 'application/octet-stream' en allowed_types
@@ -220,7 +221,7 @@ elseif (preg_match('/^\/download_document\/(\d+)$/', $request_uri, $matches)) {
             header('Content-Type: ' . $document['file_type']);
             // Un nombre de descarga más amigable y seguro
             $download_filename = preg_replace('/[^a-zA-Z0-9_\-\.]/', '', basename($document['title'])) . '.' . pathinfo($document['file_name'], PATHINFO_EXTENSION);
-            header('Content-Disposition: attachment; filename="' . $download_filename . '"'); 
+            header('Content-Disposition: attachment; filename="' . $download_filename . '"');
             header('Expires: 0');
             header('Cache-Control: must-revalidate');
             header('Pragma: public');
@@ -276,7 +277,7 @@ elseif (preg_match('/^\/delete_document\/(\d+)$/', $request_uri, $matches)) {
     header("Location: " . $base_path . "/dashboard"); // Redirigir de vuelta al dashboard
     exit();
 }
-// --- NUEVAS RUTAS PARA REESCRIBIR DOCUMENTOS DE TEXTO ---
+// --- RUTAS PARA EDITAR DOCUMENTOS DE TEXTO ---
 
 // Ruta para MOSTRAR el formulario de edición de un documento de texto
 // Ejemplo de URL: /edit_text_document/123
@@ -299,17 +300,17 @@ elseif (preg_match('/^\/edit_text_document\/(\d+)$/', $request_uri, $matches)) {
         // **Validar que es un archivo de texto antes de intentar editarlo**
         // Esta lista define qué tipos de archivo consideras "editables como texto".
         $editable_text_types = [
-            'text/plain', 
-            'text/javascript', 
-            'application/javascript', 
-            'application/x-python', 
-            'text/x-python', 
-            'text/html', 
-            'text/css', 
-            'application/sql', 
-            'text/x-sql', 
-            'application/json', 
-            'application/xml', 
+            'text/plain',
+            'text/javascript',
+            'application/javascript',
+            'application/x-python',
+            'text/x-python',
+            'text/html',
+            'text/css',
+            'application/sql',
+            'text/x-sql',
+            'application/json',
+            'application/xml',
             'text/xml'
         ];
 
@@ -339,7 +340,7 @@ elseif (preg_match('/^\/edit_text_document\/(\d+)$/', $request_uri, $matches)) {
         exit();
     }
 }
-// Ruta para PROCESAR el formulario de edición y guardar el contenido
+// Ruta para PROCESAR el formulario de edición y guardar el contenido de TEXTO
 // Recibirá el contenido actualizado del textarea
 elseif ($request_uri === '/update_text_document' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_SESSION['user_id'])) {
@@ -366,17 +367,17 @@ elseif ($request_uri === '/update_text_document' && $_SERVER['REQUEST_METHOD'] =
     if ($document) {
         // Re-validar que es un tipo de archivo editable para seguridad
         $editable_text_types = [
-            'text/plain', 
-            'text/javascript', 
-            'application/javascript', 
-            'application/x-python', 
-            'text/x-python', 
-            'text/html', 
-            'text/css', 
-            'application/sql', 
-            'text/x-sql', 
-            'application/json', 
-            'application/xml', 
+            'text/plain',
+            'text/javascript',
+            'application/javascript',
+            'application/x-python',
+            'text/x-python',
+            'text/html',
+            'text/css',
+            'application/sql',
+            'text/x-sql',
+            'application/json',
+            'application/xml',
             'text/xml'
         ];
 
@@ -388,8 +389,6 @@ elseif ($request_uri === '/update_text_document' && $_SERVER['REQUEST_METHOD'] =
                 // Sobrescribir el archivo con el nuevo contenido
                 // file_put_contents devuelve el número de bytes escritos o FALSE en caso de error.
                 if (file_put_contents($file_path, $new_content) !== false) {
-                    // Opcional: Actualizar la fecha de modificación en la DB si tu modelo Document lo soporta
-                    // Por ejemplo: $document_model->updateLastModified($document_id); 
                     $_SESSION['upload_message'] = "Documento de texto actualizado con éxito.";
                 } else {
                     $_SESSION['upload_message'] = "Error: No se pudo escribir en el archivo. Verifique permisos.";
@@ -399,6 +398,162 @@ elseif ($request_uri === '/update_text_document' && $_SERVER['REQUEST_METHOD'] =
             }
         } else {
             $_SESSION['upload_message'] = "Error: Este tipo de documento (" . htmlspecialchars($document['file_type']) . ") no es editable como texto.";
+        }
+    } else {
+        $_SESSION['upload_message'] = "Error: Documento no encontrado o no tienes permiso para actualizarlo.";
+    }
+
+    header("Location: " . $base_path . "/dashboard");
+    exit();
+}
+// --- NUEVAS RUTAS PARA EDITAR ARCHIVOS DE EXCEL (DATOS BÁSICOS) ---
+
+// Ruta para MOSTRAR el formulario de edición de un documento Excel
+// Ejemplo de URL: /edit_excel_document/123
+elseif (preg_match('/^\/edit_excel_document\/(\d+)$/', $request_uri, $matches)) {
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: " . $base_path . "/login");
+        exit();
+    }
+
+    $document_id = (int) $matches[1];
+    $user_id = $_SESSION['user_id'];
+    $upload_dir = __DIR__ . '/../uploads/';
+
+    $db_connection = getDbConnection();
+    $document_model = new Document($db_connection);
+
+    $document = $document_model->findByIdAndUserId($document_id, $user_id);
+
+    if ($document) {
+        // Validar que es un archivo Excel
+        $excel_types = [
+            'application/vnd.ms-excel', // .xls
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // .xlsx
+        ];
+
+        if (in_array($document['file_type'], $excel_types)) {
+            $file_path = $upload_dir . $document['file_name'];
+
+            if (file_exists($file_path)) {
+                try {
+                    // Usar PhpSpreadsheet para leer el archivo
+                    $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($file_path);
+                    $sheet = $spreadsheet->getActiveSheet(); // Obtener la hoja activa
+
+                    // Leer todas las celdas con datos
+                    $highestRow = $sheet->getHighestRow();
+                    $highestColumn = $sheet->getHighestColumn(); // Ej: 'E'
+                    $excel_data = [];
+
+                    for ($row = 1; $row <= $highestRow; $row++) {
+                        $rowData = $sheet->rangeToArray('A' . $row . ':' . $highestColumn . $row,
+                            NULL, TRUE, FALSE);
+                        $excel_data[] = $rowData[0]; // rowData es un array de arrays, solo queremos el primero
+                    }
+
+                    // Incluimos la vista que contiene el formulario de edición
+                    require_once '../views/edit_excel_document.php';
+
+                } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {
+                    $_SESSION['upload_message'] = "Error al leer el archivo Excel: " . $e->getMessage();
+                    header("Location: " . $base_path . "/dashboard");
+                    exit();
+                }
+            } else {
+                http_response_code(404);
+                $_SESSION['upload_message'] = "Error: Archivo físico de Excel no encontrado para editar.";
+                header("Location: " . $base_path . "/dashboard");
+                exit();
+            }
+        } else {
+            $_SESSION['upload_message'] = "Error: Este documento no es un archivo Excel editable.";
+            header("Location: " . $base_path . "/dashboard");
+            exit();
+        }
+    } else {
+        http_response_code(404);
+        $_SESSION['upload_message'] = "Error: Documento no encontrado o no tienes permiso para editarlo.";
+        header("Location: " . $base_path . "/dashboard");
+        exit();
+    }
+}
+
+// Ruta para PROCESAR el formulario de edición y guardar el contenido del Excel
+// Recibirá los datos de la tabla editada
+elseif ($request_uri === '/update_excel_document' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: " . $base_path . "/login");
+        exit();
+    }
+
+    $document_id = $_POST['document_id'] ?? null;
+    $excel_data_posted = $_POST['excel_data'] ?? []; // Los datos vendrán como un array bidimensional
+    $user_id = $_SESSION['user_id'];
+    $upload_dir = __DIR__ . '/../uploads/';
+
+    if (!$document_id) {
+        $_SESSION['upload_message'] = "Error: ID de documento no proporcionado para actualizar Excel.";
+        header("Location: " . $base_path . "/dashboard");
+        exit();
+    }
+
+    $db_connection = getDbConnection();
+    $document_model = new Document($db_connection);
+
+    $document = $document_model->findByIdAndUserId($document_id, $user_id);
+
+    if ($document) {
+        $excel_types = [
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        ];
+
+        if (in_array($document['file_type'], $excel_types)) {
+            $file_path = $upload_dir . $document['file_name'];
+
+            // Comprobar si el archivo existe y el directorio es escribible
+            if (file_exists($file_path) && is_writable(dirname($file_path))) {
+                try {
+                    // Crear un nuevo objeto Spreadsheet y cargar los datos
+                    $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+                    $sheet = $spreadsheet->getActiveSheet();
+
+                    // Escribir los datos recibidos del formulario en la hoja
+                    // Nota: Esto escribirá solo los datos que fueron enviados.
+                    // Los datos no presentados en el formulario (fuera del rango leído inicialmente) se perderán.
+                    $sheet->fromArray($excel_data_posted, NULL, 'A1');
+
+                    // Determinar el tipo de escritor basado en el tipo MIME original o extensión
+                    $writerType = '';
+                    $originalExtension = pathinfo($document['file_name'], PATHINFO_EXTENSION);
+                    if ($originalExtension === 'xlsx') {
+                        $writerType = \PhpOffice\PhpSpreadsheet\IOFactory::WRITER_XLSX;
+                    } elseif ($originalExtension === 'xls') {
+                        $writerType = \PhpOffice\PhpSpreadsheet\IOFactory::WRTERY_XLS; // Error tipográfico aquí
+                    } else {
+                        // Fallback, aunque ya validamos el tipo MIME antes
+                        $_SESSION['upload_message'] = "Error: Extensión de archivo Excel no reconocida para guardar.";
+                        header("Location: " . $base_path . "/dashboard");
+                        exit();
+                    }
+
+                    // Guardar el archivo Excel actualizado
+                    $writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, $writerType);
+                    $writer->save($file_path);
+
+                    $_SESSION['upload_message'] = "Documento Excel actualizado con éxito (solo datos).";
+
+                } catch (\PhpOffice\PhpSpreadsheet\Writer\Exception $e) {
+                    $_SESSION['upload_message'] = "Error al guardar el archivo Excel: " . $e->getMessage();
+                } catch (\Exception $e) { // Capturar otras excepciones inesperadas
+                    $_SESSION['upload_message'] = "Ocurrió un error inesperado al procesar el Excel: " . $e->getMessage();
+                }
+            } else {
+                $_SESSION['upload_message'] = "Error: El archivo Excel no existe o el directorio no tiene permisos de escritura.";
+            }
+        } else {
+            $_SESSION['upload_message'] = "Error: Este tipo de documento no es un Excel editable.";
         }
     } else {
         $_SESSION['upload_message'] = "Error: Documento no encontrado o no tienes permiso para actualizarlo.";
