@@ -20,6 +20,23 @@ $username = htmlspecialchars($_SESSION['username'] ?? 'Usuario');
 if (!isset($documents)) {
     $documents = [];
 }
+
+// Definir los tipos de archivo que pueden ser editados como texto
+// Esta lista debe coincidir con la lista en index.php
+$editable_text_types = [
+    'text/plain',
+    'text/javascript',
+    'application/javascript',
+    'application/x-python',
+    'text/x-python',
+    'text/html',
+    'text/css',
+    'application/sql',
+    'text/x-sql',
+    'application/json',
+    'application/xml',
+    'text/xml'
+];
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -28,14 +45,68 @@ if (!isset($documents)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Gestor de Documentos</title>
     <link rel="stylesheet" href="<?php echo $base_path; ?>/css/style.css">
+    <style>
+        /* Estilos básicos para la tabla si no los tienes en style.css */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+        .button {
+            display: inline-block;
+            padding: 8px 12px;
+            margin: 5px 0;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            text-decoration: none;
+            text-align: center;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <?php
         // Mostrar el mensaje de subida (éxito o error) si existe en la sesión
         if (isset($_SESSION['upload_message'])) {
-            $message_style = (strpos($_SESSION['upload_message'], 'Error') !== false || strpos($_SESSION['upload_message'], 'No se') !== false) ? 'color: red;' : 'color: green;';
-            echo "<p style='{$message_style} font-weight: bold;'>". htmlspecialchars($_SESSION['upload_message']) ."</p>";
+            // Mejoramos la determinación del estilo del mensaje
+            $message_class = (strpos($_SESSION['upload_message'], 'Error') !== false || strpos($_SESSION['upload_message'], 'No se pudo') !== false || strpos($_SESSION['upload_message'], 'no permitido') !== false) ? 'error' : 'success';
+            echo "<p class='message {$message_class}'>". htmlspecialchars($_SESSION['upload_message']) ."</p>";
             unset($_SESSION['upload_message']); // Limpiar el mensaje después de mostrarlo una vez
         }
         ?>
@@ -43,7 +114,7 @@ if (!isset($documents)) {
         <h2>Bienvenido a tu Dashboard, <?php echo $username; ?>!</h2>
         <p>Aquí puedes ver, subir y gestionar tus documentos.</p>
 
-        ---
+        <hr>
 
         <h3>Tus Documentos</h3>
         <?php if (empty($documents)): // Si no hay documentos para mostrar ?>
@@ -67,9 +138,15 @@ if (!isset($documents)) {
                             <td><?php echo round($doc['file_size'] / 1024, 2); ?> KB</td>
                             <td><?php echo htmlspecialchars($doc['upload_date']); ?></td>
                             <td>
-                                <a href="<?php echo $base_path; ?>/view_document/<?php echo $doc['id']; ?>">Ver</a> |
+                                <a href="<?php echo $base_path; ?>/view_document/<?php echo $doc['id']; ?>" target="_blank">Ver</a> |
                                 <a href="<?php echo $base_path; ?>/download_document/<?php echo $doc['id']; ?>">Descargar</a> |
-                                <a href="<?php echo $base_path; ?>/delete_document/<?php echo $doc['id']; ?>" onclick="return confirm('¿Estás seguro de que quieres eliminar este documento?');">Eliminar</a>
+                                <?php
+                                // Lógica para mostrar el botón de editar solo para tipos de texto
+                                if (in_array($doc['file_type'], $editable_text_types)):
+                                ?>
+                                    <a href="<?php echo htmlspecialchars($base_path); ?>/edit_text_document/<?php echo $doc['id']; ?>">Editar</a> |
+                                <?php endif; ?>
+                                <a href="<?php echo htmlspecialchars($base_path); ?>/delete_document/<?php echo $doc['id']; ?>" onclick="return confirm('¿Estás seguro de que quieres eliminar este documento?');">Eliminar</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -77,7 +154,7 @@ if (!isset($documents)) {
             </table>
         <?php endif; ?>
 
-        ---
+        <hr>
 
         <h3>Subir Nuevo Documento</h3>
         <form action="<?php echo $base_path; ?>/uploads" method="POST" enctype="multipart/form-data">
@@ -90,9 +167,9 @@ if (!isset($documents)) {
             <button type="submit">Subir Documento</button>
         </form>
 
-        ---
+        <hr>
 
         <p><a href="<?php echo $base_path; ?>/logout">Cerrar Sesión</a></p>
     </div>
 </body>
-</html>
+</html>s

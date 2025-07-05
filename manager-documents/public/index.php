@@ -15,7 +15,8 @@ $public_pos = strpos($request_uri_path, '/public');
 if ($public_pos !== false) {
     $base_path = substr($request_uri_path, 0, $public_pos + strlen('/public'));
 } else {
-    $base_path = '/don/manager-documents/public'; // Fallback manual, ¡ajusta si es necesario!
+    // Fallback manual si '/public' no está en la URL. ¡Asegúrate de que esta ruta sea correcta!
+    $base_path = '/don/manager-documents/public'; 
 }
 
 // 3. Obtener la URL solicitada limpia
@@ -63,38 +64,84 @@ elseif ($request_uri === '/uploads') {
 
         $file = $_FILES['document_file'];
 
-        $allowed_types = ['application/pdf', 'image/jpeg', 'image/png', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+        // Lista de tipos permitidos, incluyendo los genéricos y específicos para código y cómics
+        $allowed_types = [
+            'application/pdf',
+            'image/jpeg',
+            'image/png',
+            'application/msword', // .doc
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+            'text/plain',                 // Para .txt y código genérico
+            'text/javascript',            // Para .js
+            'application/javascript',     // Alternativa para .js
+            'application/x-python',       // Para .py
+            'text/x-python',              // Alternativa común para .py
+            'text/html',                  // Para .html
+            'text/css',                   // Para .css
+            'application/sql',            // Para .sql
+            'text/x-sql',                 // Alternativa común para .sql
+            'application/json',           // Para .json
+            'application/xml',            // Para .xml
+            'text/xml',                   // Alternativa para .xml
+            'application/x-cbr',          // Para .cbr
+            'application/x-rar-compressed', // Alternativa para .cbr
+            'application/x-cbz',          // Para .cbz
+            'application/zip',            // Alternativa para .cbz (si .cbz usa zip)
+            // Añadir tipos para Excel si los necesitas:
+            'application/vnd.ms-excel', // .xls
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+            // Generalmente, NO incluimos 'application/octet-stream' en allowed_types
+            // porque es demasiado permisivo. Preferimos que finfo_file detecte el tipo real.
+        ];
+
         $max_file_size = 5 * 1024 * 1024; // 5 MB
 
         if ($file['error'] !== UPLOAD_ERR_OK) {
-            $_SESSION['upload_message'] = "Error al subir el archivo: " . $file['error'];
-        } elseif (!in_array($file['type'], $allowed_types)) {
-            $_SESSION['upload_message'] = "Tipo de archivo no permitido: " . htmlspecialchars($file['type']);
+            $_SESSION['upload_message'] = "Error al subir el archivo: " . $file['error'] . ". Código: " . $file['error']; // Añadimos el código de error para depuración
         } elseif ($file['size'] > $max_file_size) {
             $_SESSION['upload_message'] = "El archivo es demasiado grande (máx. 5MB).";
         } elseif (!is_uploaded_file($file['tmp_name'])) {
-            $_SESSION['upload_message'] = "Error de seguridad con el archivo subido.";
+            $_SESSION['upload_message'] = "Error de seguridad con el archivo subido (posible ataque de carga).";
         } else {
+            // **Paso clave**: Usar finfo_file para obtener el tipo MIME real del archivo
+            // Asegúrate de que la extensión 'fileinfo' esté habilitada en tu php.ini
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            if ($finfo === false) {
+                $_SESSION['upload_message'] = "Error del servidor: La extensión fileinfo de PHP no está habilitada.";
+                header("Location: " . $base_path . "/dashboard");
+                exit();
+            }
+            $real_mime_type = finfo_file($finfo, $file['tmp_name']);
+            finfo_close($finfo);
+
+            // Validar el tipo MIME real contra nuestra lista de permitidos
+            if (!in_array($real_mime_type, $allowed_types)) {
+                $_SESSION['upload_message'] = "Tipo de archivo no permitido: " . htmlspecialchars($real_mime_type) . " (Detectado por el servidor).";
+                header("Location: " . $base_path . "/dashboard");
+                exit();
+            }
+
             $file_extension = pathinfo($file['name'], PATHINFO_EXTENSION);
             $unique_file_name = uniqid($user_id . '_', true) . '.' . $file_extension;
             $destination_path = $upload_dir . $unique_file_name;
 
             if (!is_dir($upload_dir)) {
-                mkdir($upload_dir, 0777, true);
+                mkdir($upload_dir, 0777, true); // Crea el directorio 'uploads' si no existe
             }
 
             if (move_uploaded_file($file['tmp_name'], $destination_path)) {
                 $db_connection = getDbConnection();
                 $document_model = new Document($db_connection);
 
-                if ($document_model->create($user_id, $document_title, $unique_file_name, $file['type'], $file['size'])) {
+                // IMPORTANTE: Almacenar el REAL MIME TYPE, no el que envió el navegador
+                if ($document_model->create($user_id, $document_title, $unique_file_name, $real_mime_type, $file['size'])) {
                     $_SESSION['upload_message'] = "Documento subido y registrado con éxito.";
                 } else {
-                    unlink($destination_path); // Limpiar si falla la DB
+                    unlink($destination_path); // Limpiar el archivo subido si falla el registro en la DB
                     $_SESSION['upload_message'] = "Error al registrar el documento en la base de datos.";
                 }
             } else {
-                $_SESSION['upload_message'] = "Error al mover el archivo subido al servidor.";
+                $_SESSION['upload_message'] = "Error al mover el archivo subido al servidor. Permisos de escritura o directorio 'uploads' inexistente.";
             }
         }
     } else {
@@ -110,7 +157,7 @@ elseif ($request_uri === '/logout') {
     header("Location: " . $base_path . "/login");
     exit();
 }
-// --- NUEVAS RUTAS PARA VER, DESCARGAR Y ELIMINAR DOCUMENTOS ---
+// --- RUTAS EXISTENTES PARA VER, DESCARGAR Y ELIMINAR DOCUMENTOS ---
 
 // Ruta para VER un documento
 // Ejemplo de URL: /view_document/123
@@ -171,7 +218,9 @@ elseif (preg_match('/^\/download_document\/(\d+)$/', $request_uri, $matches)) {
             // Establecer cabeceras para forzar la descarga
             header('Content-Description: File Transfer');
             header('Content-Type: ' . $document['file_type']);
-            header('Content-Disposition: attachment; filename="' . basename($document['title'] . '.' . pathinfo($document['file_name'], PATHINFO_EXTENSION)) . '"'); // Nombre de descarga amigable
+            // Un nombre de descarga más amigable y seguro
+            $download_filename = preg_replace('/[^a-zA-Z0-9_\-\.]/', '', basename($document['title'])) . '.' . pathinfo($document['file_name'], PATHINFO_EXTENSION);
+            header('Content-Disposition: attachment; filename="' . $download_filename . '"'); 
             header('Expires: 0');
             header('Cache-Control: must-revalidate');
             header('Pragma: public');
@@ -215,7 +264,7 @@ elseif (preg_match('/^\/delete_document\/(\d+)$/', $request_uri, $matches)) {
                 unlink($file_path); // Eliminar el archivo físico
                 $_SESSION['upload_message'] = "Documento y archivo eliminados con éxito.";
             } else {
-                $_SESSION['upload_message'] = "Documento eliminado de la DB, pero el archivo físico no se encontró.";
+                $_SESSION['upload_message'] = "Documento eliminado de la DB, pero el archivo físico no se encontró en el servidor.";
             }
         } else {
             $_SESSION['upload_message'] = "Error al eliminar el documento de la base de datos.";
@@ -225,6 +274,137 @@ elseif (preg_match('/^\/delete_document\/(\d+)$/', $request_uri, $matches)) {
     }
 
     header("Location: " . $base_path . "/dashboard"); // Redirigir de vuelta al dashboard
+    exit();
+}
+// --- NUEVAS RUTAS PARA REESCRIBIR DOCUMENTOS DE TEXTO ---
+
+// Ruta para MOSTRAR el formulario de edición de un documento de texto
+// Ejemplo de URL: /edit_text_document/123
+elseif (preg_match('/^\/edit_text_document\/(\d+)$/', $request_uri, $matches)) {
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: " . $base_path . "/login");
+        exit();
+    }
+
+    $document_id = (int) $matches[1];
+    $user_id = $_SESSION['user_id'];
+    $upload_dir = __DIR__ . '/../uploads/';
+
+    $db_connection = getDbConnection();
+    $document_model = new Document($db_connection);
+
+    $document = $document_model->findByIdAndUserId($document_id, $user_id);
+
+    if ($document) {
+        // **Validar que es un archivo de texto antes de intentar editarlo**
+        // Esta lista define qué tipos de archivo consideras "editables como texto".
+        $editable_text_types = [
+            'text/plain', 
+            'text/javascript', 
+            'application/javascript', 
+            'application/x-python', 
+            'text/x-python', 
+            'text/html', 
+            'text/css', 
+            'application/sql', 
+            'text/x-sql', 
+            'application/json', 
+            'application/xml', 
+            'text/xml'
+        ];
+
+        if (in_array($document['file_type'], $editable_text_types)) {
+            $file_path = $upload_dir . $document['file_name'];
+
+            if (file_exists($file_path)) {
+                // Lee el contenido actual del archivo
+                $document_content = file_get_contents($file_path);
+                // Incluimos la vista que contiene el formulario de edición
+                require_once '../views/edit_text_document.php';
+            } else {
+                http_response_code(404);
+                $_SESSION['upload_message'] = "Error: Archivo físico no encontrado para editar.";
+                header("Location: " . $base_path . "/dashboard");
+                exit();
+            }
+        } else {
+            $_SESSION['upload_message'] = "Error: Este tipo de documento (" . htmlspecialchars($document['file_type']) . ") no se puede editar como texto.";
+            header("Location: " . $base_path . "/dashboard");
+            exit();
+        }
+    } else {
+        http_response_code(404);
+        $_SESSION['upload_message'] = "Error: Documento no encontrado o no tienes permiso para editarlo.";
+        header("Location: " . $base_path . "/dashboard");
+        exit();
+    }
+}
+// Ruta para PROCESAR el formulario de edición y guardar el contenido
+// Recibirá el contenido actualizado del textarea
+elseif ($request_uri === '/update_text_document' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: " . $base_path . "/login");
+        exit();
+    }
+
+    $document_id = $_POST['document_id'] ?? null;
+    $new_content = $_POST['document_content'] ?? '';
+    $user_id = $_SESSION['user_id'];
+    $upload_dir = __DIR__ . '/../uploads/';
+
+    if (!$document_id) {
+        $_SESSION['upload_message'] = "Error: ID de documento no proporcionado para actualizar.";
+        header("Location: " . $base_path . "/dashboard");
+        exit();
+    }
+
+    $db_connection = getDbConnection();
+    $document_model = new Document($db_connection);
+
+    $document = $document_model->findByIdAndUserId($document_id, $user_id);
+
+    if ($document) {
+        // Re-validar que es un tipo de archivo editable para seguridad
+        $editable_text_types = [
+            'text/plain', 
+            'text/javascript', 
+            'application/javascript', 
+            'application/x-python', 
+            'text/x-python', 
+            'text/html', 
+            'text/css', 
+            'application/sql', 
+            'text/x-sql', 
+            'application/json', 
+            'application/xml', 
+            'text/xml'
+        ];
+
+        if (in_array($document['file_type'], $editable_text_types)) {
+            $file_path = $upload_dir . $document['file_name'];
+
+            // **Validar que el archivo existe y es escribible**
+            if (file_exists($file_path) && is_writable($file_path)) {
+                // Sobrescribir el archivo con el nuevo contenido
+                // file_put_contents devuelve el número de bytes escritos o FALSE en caso de error.
+                if (file_put_contents($file_path, $new_content) !== false) {
+                    // Opcional: Actualizar la fecha de modificación en la DB si tu modelo Document lo soporta
+                    // Por ejemplo: $document_model->updateLastModified($document_id); 
+                    $_SESSION['upload_message'] = "Documento de texto actualizado con éxito.";
+                } else {
+                    $_SESSION['upload_message'] = "Error: No se pudo escribir en el archivo. Verifique permisos.";
+                }
+            } else {
+                $_SESSION['upload_message'] = "Error: El archivo no existe o no tiene permisos de escritura.";
+            }
+        } else {
+            $_SESSION['upload_message'] = "Error: Este tipo de documento (" . htmlspecialchars($document['file_type']) . ") no es editable como texto.";
+        }
+    } else {
+        $_SESSION['upload_message'] = "Error: Documento no encontrado o no tienes permiso para actualizarlo.";
+    }
+
+    header("Location: " . $base_path . "/dashboard");
     exit();
 }
 // Manejo de Rutas No Encontradas (si ninguna de las anteriores coincide)
