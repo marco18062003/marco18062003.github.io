@@ -1,1 +1,79 @@
-<table border='1'><tr><td style='background-color: #CCCCCC'>Especie</td><td style='background-color: #CCCCCC'>Descripci�n</td><td style='background-color: #CCCCCC'>Mercado</td><td style='background-color: #CCCCCC'>Precio Actual</td><td style='background-color: #CCCCCC'>Valor Actual</td><td style='background-color: #CCCCCC'>Variaci�n %</td><td style='background-color: #CCCCCC'>Cant Total</td><td style='background-color: #CCCCCC'>Cant Bloq</td><td style='background-color: #CCCCCC'>Cant Pend</td><td style='background-color: #CCCCCC'>Cant Ejecutada</td><td style='background-color: #CCCCCC'>Disp. P/ Venta</td><td style='background-color: #CCCCCC'>Precio Promedio</td><td style='background-color: #CCCCCC'>Ganancias/Prdidas</td><td style='background-color: #CCCCCC'>Del Valor Medio</td></tr><tr><td>AAPL</td><td>ACC APPLE</td><td>BVC.CON</td><td>852.260,00</td><td>852.260,00</td><td>0,00</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td><td>816.420,0000</td><td>35.840,00</td><td>816.420,00</td></tr><tr><td>CIBEST</td><td>GRUPO CIBEST S.A.</td><td>BVC.CON</td><td>51.640,00</td><td>1.394.280,00</td><td>0,31</td><td>27</td><td>0</td><td>0</td><td>0</td><td>27</td><td>46.800,0000</td><td>130.680,00</td><td>1.263.600,00</td></tr><tr></tr></table>
+<table class="stock-data-table">
+  <thead>
+    <tr>
+      <th>Especie</th>
+      <th>Descripción</th>
+      <th>Mercado</th>
+      <th>Precio Actual</th>
+      <th>Valor Actual</th>
+      <th>Variación %</th>
+      <th>Cant Total</th>
+      <th>Cant Bloq</th>
+      <th>Cant Pend</th>
+      <th>Cant Ejecutada</th>
+      <th>Disp. P/ Venta</th>
+      <th>Precio Promedio</th>
+      <th>Ganancias/Pérdidas</th>
+      <th>Del Valor Medio</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>AAPL</td>
+      <td>ACC APPLE</td>
+      <td>BVC.CON</td>
+      <td>852.260,00</td>
+      <td>852.260,00</td>
+      <td>0,00</td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>816.420,0000</td>
+      <td>35.840,00</td>
+      <td>816.420,00</td>
+    </tr>
+    <tr>
+      <td>CIBEST</td>
+      <td>GRUPO CIBEST S.A.</td>
+      <td>BVC.CON</td>
+      <td>51.640,00</td>
+      <td>1.394.280,00</td>
+      <td>0,31</td>
+      <td>27</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>27</td>
+      <td>46.800,0000</td>
+      <td>130.680,00</td>
+      <td>1.263.600,00</td>
+    </tr>
+  </tbody>
+</table>
+
+<style>
+  .stock-data-table {
+    border-collapse: collapse; /* Collapses the borders for a cleaner look */
+    width: 100%; /* Makes the table take full width */
+  }
+
+  .stock-data-table th,
+  .stock-data-table td {
+    border: 1px solid #ddd; /* Light grey border for cells */
+    padding: 8px; /* Padding inside cells */
+    text-align: left; /* Aligns text to the left */
+  }
+
+  .stock-data-table thead th {
+    background-color: #e0e0e0; /* Slightly darker grey for header cells */
+    color: #333; /* Darker text for readability */
+    font-weight: bold; /* Bold header text */
+  }
+
+  /* Optional: Zebra striping for better readability */
+  .stock-data-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+</style>

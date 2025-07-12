@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>G502 - Resumen Financiero</title>
+    
+    <style>
+        /* Variables CSS para colores */
+        :root {
+            --primary-color: #3498db; /* Azul suave */
+            --secondary-color: #2ecc71; /* Verde para activo */
+            --danger-color: #e74c3c; /* Rojo para deudas */
+            --accent-color: #f39c12; /* Naranja para resaltar */
+            --text-color: #333;
+            --light-text-color: #666;
+            --background-color: #f8f9fa;
+            --card-background: #ffffff;
+            --border-color: #e0e0e0;
+            --header-bg: #4a69bd; /* Un azul más oscuro para encabezados */
+            --footer-bg: #34495e; /* Gris oscuro para pie de página */
+        }
+
+        /* Reset básico y estilos generales */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: var(--card-background);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Encabezado principal */
+        .main-header {
+            background-color: var(--header-bg);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+            margin-bottom: 20px;
+        }
+
+        .main-header h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+        }
+
+        .main-header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        /* Navegación */
+        .main-nav {
+            background-color: var(--primary-color);
+            padding: 15px 0;
+            text-align: center;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .main-nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap; /* Permite que los enlaces se envuelvan en pantallas pequeñas */
+        }
+
+        .main-nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .main-nav a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Secciones de datos */
+        .data-section {
+            padding: 30px 0;
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 2em;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            display: inline-block;
+            width: 100%; /* Para que el borde se extienda */
+        }
+
+        /* Estilos de tabla */
+        .table-responsive {
+            overflow-x: auto; /* Permite desplazamiento horizontal en pantallas pequeñas */
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto;
+            background-color: var(--card-background);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden; /* Asegura que los bordes redondeados se apliquen al contenido */
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border: 1px solid var(--border-color); /* Bordes más suaves */
+        }
+
+        thead th {
+            background-color: var(--header-bg); /* Color del encabezado */
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        .header-group {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            font-size: 1.1em;
+            padding: 10px 0;
+        }
+
+        .header-group.debt-title {
+            background-color: var(--danger-color); /* Rojo para DEUDAS */
+        }
+
+        .header-group.asset-title {
+            background-color: var(--secondary-color); /* Verde para ACTIVO */
+        }
+
+        .header-group.sub-debt-title {
+            background-color: var(--primary-color); /* Un azul más suave para sub-encabezado */
+            font-size: 1em;
+        }
+
+        .header-total {
+            background-color: var(--accent-color); /* Color de acento para totales */
+            color: white;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f6f6f6; /* Cebra sutil */
+        }
+
+        tbody tr:hover {
+            background-color: #e9f5ff; /* Resaltar al pasar el ratón */
+        }
+
+        .total-row {
+            font-weight: bold;
+            background-color: #f0f8ff; /* Fondo para filas de total */
+            color: var(--primary-color);
+        }
+
+        .divider-row td {
+            background-color: #f0f0f0;
+            height: 10px; /* Un poco de espacio entre secciones dentro de la misma tabla */
+            border: none;
+        }
+
+        /* Separador de secciones */
+        .section-divider {
+            border: 0;
+            height: 1px;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), var(--light-text-color), rgba(0, 0, 0, 0));
+            margin: 60px 0;
+        }
+
+        /* Pie de página */
+        .main-footer {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--footer-bg);
+            color: white;
+            font-size: 0.9em;
+            border-radius: 8px;
+            margin-top: 40px;
+        }
+
+        /* Responsive Design para tablas */
+        @media (max-width: 768px) {
+            .main-header h1 {
+                font-size: 2em;
+            }
+
+            .main-nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            /* Ocultar encabezados de tabla reales para vista de tarjeta */
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tr {
+                border: 1px solid var(--border-color);
+                margin-bottom: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            }
+
+            td {
+                border: none;
+                border-bottom: 1px solid #f0f0f0;
+                position: relative;
+                padding-left: 50%;
+                text-align: right;
+            }
+
+            td:last-child {
+                border-bottom: none;
+            }
+
+            /* Mostrar la etiqueta de la columna como pseudo-elemento */
+            td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+                color: var(--light-text-color);
+            }
+            .header-group, .header-total, .total-row {
+                text-align: center;
+                display: block; /* Para que ocupen todo el ancho si es necesario */
+                padding: 10px;
+                margin-top: 10px; /* Espacio extra para que no se pegue */
+                border-radius: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <h1>Resumen General - G502</h1>
+        <p>Una vista rápida de tus finanzas.</p>
+    </header>
+
+    <nav class="main-nav">
+        <ul>
+            <li><a href="#deudas-section">Deudas</a></li>
+            <li><a href="#activo-section">Activo</a></li>
+            <li><a href="#diciembre-section">Diciembre</a></li>
+            <li><a href="#m-section">M</a></li>
+        </ul>
+    </nav>
+
+    <main class="container">
+        <section id="deudas-section" class="data-section">
+            <h2 class="section-title">Deudas</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="5" class="header-group debt-title">DEUDAS</th>
+                            <th></th> <th colspan="5" class="header-group debt-title">GASTOS MENSUALES</th>
+                            <th></th> <th class="header-total">TOTAL</th>
+                        </tr>
+                        <tr>
+                            <th>Concepto</th>
+                            <th>Entidad</th>
+                            <th>Valor</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th></th>
+                            <th>Concepto</th>
+                            <th>Entidad</th>
+                            <th>Valor</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Concepto">Tarjetas de Crédito</td>
+                            <td data-label="Entidad">CODENSA</td>
+                            <td data-label="Valor">$301.000</td>
+                            <td data-label="Fecha"></td>
+                            <td data-label="Estado"></td>
+                            <td></td>
+                            <td data-label="Concepto">Gasto Mensual</td>
+                            <td data-label="Entidad">CLARO</td>
+                            <td data-label="Valor">$59.899</td>
+                            <td data-label="Fecha"></td>
+                            <td data-label="Estado"></td>
+                            <td></td>
+                            <td data-label="Total General">$3.440.899</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Concepto"></td>
+                            <td data-label="Entidad">CAJASOCIAL</td>
+                            <td data-label="Valor">$3.000.000</td>
+                            <td data-label="Fecha"></td>
+                            <td data-label="Estado"></td>
+                            <td></td>
+                            <td data-label="Concepto"></td>
+                            <td data-label="Entidad">BLACKERS</td>
+                            <td data-label="Valor">$80.000</td>
+                            <td data-label="Fecha"></td>
+                            <td data-label="Estado"></td>
+                            <td></td>
+                            <td data-label="Total General"></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Concepto" class="total-row">Total Tarjetas: $3.301.000</td>
+                            <td data-label="Entidad"></td>
+                            <td data-label="Valor"></td>
+                            <td data-label="Fecha"></td>
+                            <td data-label="Estado"></td>
+                            <td></td>
+                            <td data-label="Concepto" class="total-row">Total Gastos: $139.899</td>
+                            <td data-label="Entidad">DON Jorgito</td>
+                            <td data-label="Valor">$0</td>
+                            <td data-label="Fecha"></td>
+                            <td data-label="Estado"></td>
+                            <td></td>
+                            <td data-label="Total General"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="divider-row"></td>
+                            <td></td>
+                            <td colspan="5" class="divider-row"></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th colspan="5" class="header-group sub-debt-title">DEUDAS (Continuación)</th>
+                            <th></th>
+                            <th colspan="5" class="header-group sub-debt-title">GASTOS MENSUALES (Continuación)</th>
+                            <th></th>
+                            <th class="header-total">TOTAL</th>
+                        </tr>
+                        <tr>
+                            <td data-label="Concepto">Tarjetas de Crédito</td>
+                            <td data-label="Entidad">CODENSA</td>
+                            <td data-label="Valor">$0</td>
+                            <td data-label="Fecha">22</td>
+                            <td data-label="Estado">activa</td>
+                            <td></td>
+                            <td data-label="Concepto">Gasto Mensual</td>
+                            <td data-label="Entidad">CLARO</td>
+                            <td data-label="Valor">$59.899</td>
+                            <td data-label="Fecha">22</td>
+                            <td data-label="Estado">activa</td>
+                            <td></td>
+                            <td data-label="Total General">$1.690.933</td>
+                        </tr>
+                        <tr>
+                            <td data-label="Concepto" class="total-row">Total Tarjetas: $1.551.034</td>
+                            <td data-label="Entidad">CAJASOCIAL</td>
+                            <td data-label="Valor">$1.551.034</td>
+                            <td data-label="Fecha">16</td>
+                            <td data-label="Estado">activa</td>
+                            <td></td>
+                            <td data-label="Concepto" class="total-row">Total Gastos: $139.899</td>
+                            <td data-label="Entidad">BLACKERS</td>
+                            <td data-label="Valor">$80.000</td>
+                            <td data-label="Fecha">10</td>
+                            <td data-label="Estado">activa</td>
+                            <td></td>
+                            <td data-label="Total General"></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Concepto"></td>
+                            <td data-label="Entidad"></td>
+                            <td data-label="Valor"></td>
+                            <td data-label="Fecha"></td>
+                            <td data-label="Estado"></td>
+                            <td></td>
+                            <td data-label="Concepto"></td>
+                            <td data-label="Entidad">DON Jorgito</td>
+                            <td data-label="Valor">$0</td>
+                            <td data-label="Fecha">no aplica</td>
+                            <td data-label="Estado">no aplica</td>
+                            <td></td>
+                            <td data-label="Total General"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <hr class="section-divider">
+
+        <section id="activo-section" class="data-section">
+            <h2 class="section-title">Activo</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="16"></th>
+                            <th data-label="Moneda">USD a COP</th>
+                            <th data-label="Valor">4330</th>
+                        </tr>
+                        <tr>
+                            <th colspan="16" class="header-group asset-title">ACTIVO</th>
+                            <th data-label="Moneda">USD</th>
+                            <th data-label="Valor">1045</th>
+                        </tr>
+                        </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="18"></td> </tr>
+                        <tr>
+                            <th colspan="7" class="header-group asset-title">FIAT</th>
+                            <th></th>
+                            <th colspan="5" class="header-group asset-title">ACTIVO</th>
+                            <th class="header-total">TOTAL</th>
+                            <th colspan="4"></th>
+                        </tr>
+                        <tr>
+                            <td data-label="Concepto">real</td>
+                            <td data-label="Valor">$0</td>
+                            <td colspan="5"></td>
+                            <td data-label="Concepto">accion</td>
+                            <td data-label="Valor">$0</td>
+                            <td colspan="2"></td>
+                            <td data-label="Total General"></td>
+                            <td colspan="4"></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Total FIAT" class="total-row">$323.198</td>
+                            <td data-label="Concepto">virtual</td>
+                            <td data-label="Valor">$5.898</td>
+                            <td colspan="15"></td>
+                        </tr>
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <hr class="section-divider">
+
+        <section id="diciembre-section" class="data-section">
+            <h2 class="section-title">Diciembre</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="13" class="header-group debt-title">DICIEMBRE (DEUDAS)</th>
+                            <th class="header-total">TOTAL</th>
+                        </tr>
+                        <tr>
+                            <th>Concepto</th>
+                            <th>Entidad</th>
+                            <th>Valor</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th></th>
+                            <th>Concepto</th>
+                            <th>Entidad</th>
+                            <th>Valor</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Concepto">Préstamo</td>
+                            <td data-label="Entidad">Banco X</td>
+                            <td data-label="Valor">$1.500.000</td>
+                            <td data-label="Fecha">15/12/2024</td>
+                            <td data-label="Estado">Activo</td>
+                            <td></td>
+                            <td data-label="Concepto">Servicio</td>
+                            <td data-label="Entidad">Internet Pro</td>
+                            <td data-label="Valor">$80.000</td>
+                            <td data-label="Fecha">01/12/2024</td>
+                            <td data-label="Estado">Pagado</td>
+                            <td></td>
+                            <td></td>
+                            <td data-label="Total General">$1.580.000</td>
+                        </tr>
+                        <tr>
+                            <td colspan="14" class="divider-row"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="14" class="total-row">Total Diciembre: $X.XXX.XXX</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <hr class="section-divider">
+
+        <section id="m-section" class="data-section">
+            <h2 class="section-title">M</h2>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2" class="header-group asset-title">INVERSIÓN (M)</th>
+                            <th></th>
+                            <th></th>
+                            <th class="header-total">TOTAL</th>
+                        </tr>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Monto</th>
+                            <th>Rendimiento</th>
+                            <th>Fecha Inicio</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Tipo">Cripto</td>
+                            <td data-label="Monto">$500.000</td>
+                            <td data-label="Rendimiento">10%</td>
+                            <td data-label="Fecha Inicio">01/01/2024</td>
+                            <td data-label="Total">$550.000</td>
+                        </tr>
+                        <tr>
+                            <td colspan="5" class="total-row">Total Inversiones (M): $X.XXX.XXX</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <p>&copy; <?php echo date("Y"); ?> G502. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+</html>
