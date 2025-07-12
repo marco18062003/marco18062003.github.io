@@ -62,6 +62,9 @@ elseif ($request_uri === '/uploads') {
         $upload_dir = __DIR__ . '/../uploads/';
         $user_id = $_SESSION['user_id'];
         $document_title = $_POST['document_title'] ?? 'Sin título';
+        $document_category = $_POST['document_cat'] ?? 'General';
+       
+
 
         $file = $_FILES['document_file'];
 
@@ -135,7 +138,7 @@ elseif ($request_uri === '/uploads') {
                 $document_model = new Document($db_connection);
 
                 // IMPORTANTE: Almacenar el REAL MIME TYPE, no el que envió el navegador
-                if ($document_model->create($user_id, $document_title, $unique_file_name, $real_mime_type, $file['size'])) {
+                if ($document_model->create($user_id, $document_title, $unique_file_name, $real_mime_type, $file['size'], $document_category)) {
                     $_SESSION['upload_message'] = "Documento subido y registrado con éxito.";
                 } else {
                     unlink($destination_path); // Limpiar el archivo subido si falla el registro en la DB
@@ -453,6 +456,7 @@ elseif (preg_match('/^\/edit_excel_document\/(\d+)$/', $request_uri, $matches)) 
                     }
 
                     // Incluimos la vista que contiene el formulario de edición
+                    header('Content-Type: text/html; charset=utf-8');
                     require_once '../views/edit_excel_document.php';
 
                 } catch (\PhpOffice\PhpSpreadsheet\Reader\Exception $e) {

@@ -43,13 +43,28 @@ $excel_types = [
     'application/vnd.ms-excel', // .xls
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' // .xlsx
 ];
+
+// --- NUEVAS CATEGORÍAS PREDEFINIDAS ---
+// Puedes modificar esta lista con las categorías que desees.
+$categories = [
+    'General',
+    'Trabajo',
+    'Personal',
+    'Estudios',
+    'Finanzas',
+    'Legal',
+    'Salud',
+    'Proyectos',
+    'Marketing', // Ejemplo de nueva categoría
+    'Desarrollo' // Otro ejemplo
+];
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Gestor de Documentos</title>
+    <title>G502 - Dashboard</title>
     <link rel="stylesheet" href="<?php echo $base_path; ?>/css/style.css">
     <style>
         /* Estilos básicos para la tabla si no los tienes en style.css */
@@ -104,6 +119,29 @@ $excel_types = [
         .button:hover {
             background-color: #0056b3;
         }
+        form label, form input[type="text"], form input[type="file"], form select, form button {
+            display: block; /* Asegura que cada elemento tome su propia línea */
+            margin-bottom: 10px; /* Espacio entre elementos del formulario */
+            width: 100%; /* Ocupa todo el ancho disponible */
+            box-sizing: border-box; /* Incluye padding y borde en el ancho total */
+        }
+        form input[type="text"], form select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        form button {
+            width: auto; /* Para que el botón no ocupe todo el ancho si no es necesario */
+            padding: 10px 15px;
+            background-color: #28a745; /* Color verde para el botón de subir */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
@@ -118,21 +156,20 @@ $excel_types = [
         }
         ?>
 
-        <h2>Bienvenido a tu Dashboard, <?php echo $username; ?>!</h2>
-        <p>Aquí puedes ver, subir y gestionar tus documentos.</p>
+        <h2>Hola, <?php echo $username; ?>. ¡BIENVENIDO A G502!</h2>
 
         <hr>
 
         <h3>Tus Documentos</h3>
         <?php if (empty($documents)): // Si no hay documentos para mostrar ?>
-            <p>Aún no tienes documentos subidos. ¡Es hora de subir el primero!</p>
+            <p>Aún no tienes documentos subidos. ¡Sube tu primer documento!</p>
         <?php else: ?>
             <table>
                 <thead>
                     <tr>
                         <th>Título</th>
                         <th>Tipo</th>
-                        <th>Tamaño</th>
+                        <th>Categoría</th> <th>Tamaño</th>
                         <th>Fecha de Subida</th>
                         <th>Acciones</th>
                     </tr>
@@ -142,23 +179,24 @@ $excel_types = [
                         <tr>
                             <td><?php echo htmlspecialchars($doc['title']); ?></td>
                             <td><?php echo htmlspecialchars($doc['file_type']); ?></td>
+                            <td><?php echo htmlspecialchars($doc['category_name'] ?? 'N/A'); ?></td>
                             <td><?php echo round($doc['file_size'] / 1024, 2); ?> KB</td>
                             <td><?php echo htmlspecialchars($doc['upload_date']); ?></td>
                             <td>
-                                <a href="<?php echo $base_path; ?>/view_document/<?php echo $doc['id']; ?>" target="_blank">Ver</a> |
-                                <a href="<?php echo $base_path; ?>/download_document/<?php echo $doc['id']; ?>">Descargar</a> |
+                                <a href="<?php echo $base_path; ?>/view_document/<?php echo $doc['id']; ?>" target="_blank" class="button">Ver</a>
+                                <a href="<?php echo $base_path; ?>/download_document/<?php echo $doc['id']; ?>" class="button">Descargar</a>
                                 <?php
                                 // Lógica para mostrar el botón de editar texto
                                 if (in_array($doc['file_type'], $editable_text_types)):
                                 ?>
-                                    <a href="<?php echo htmlspecialchars($base_path); ?>/edit_text_document/<?php echo $doc['id']; ?>">Editar</a> |
+                                    <a href="<?php echo htmlspecialchars($base_path); ?>/edit_text_document/<?php echo $doc['id']; ?>" class="button">Editar Texto</a>
                                 <?php
                                 // --- NUEVA LÓGICA: Lógica para mostrar el botón de editar Excel ---
                                 elseif (in_array($doc['file_type'], $excel_types)):
                                 ?>
-                                    <a href="<?php echo htmlspecialchars($base_path); ?>/edit_excel_document/<?php echo $doc['id']; ?>">Editar (Solo Datos)</a> |
+                                    <a href="<?php echo htmlspecialchars($base_path); ?>/edit_excel_document/<?php echo $doc['id']; ?>" class="button">Editar Excel</a>
                                 <?php endif; ?>
-                                <a href="<?php echo htmlspecialchars($base_path); ?>/delete_document/<?php echo $doc['id']; ?>" onclick="return confirm('¿Estás seguro de que quieres eliminar este documento?');">Eliminar</a>
+                                <a href="<?php echo htmlspecialchars($base_path); ?>/delete_document/<?php echo $doc['id']; ?>" onclick="return confirm('¿Estás seguro de que quieres eliminar este documento?');" class="button" style="background-color: #dc3545;">Eliminar</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -170,18 +208,28 @@ $excel_types = [
 
         <h3>Subir Nuevo Documento</h3>
         <form action="<?php echo $base_path; ?>/uploads" method="POST" enctype="multipart/form-data">
-            <label for="document_title">Título del Documento:</label><br>
-            <input type="text" id="document_title" name="document_title" required><br><br>
 
-            <label for="document_file">Seleccionar Archivo:</label><br>
-            <input type="file" id="document_file" name="document_file" required><br><br>
+            <label for="document_title">Título del Documento:</label>
+            <input type="text" id="document_title" name="document_title" required>
+
+            <label for="document_cat">Categoría:</label>
+            <select id="document_cat" name="document_cat" required>
+                <?php foreach ($categories as $cat_name): ?>
+                    <option value="<?php echo htmlspecialchars($cat_name); ?>">
+                        <?php echo htmlspecialchars($cat_name); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+
+            <label for="document_file">Seleccionar Archivo:</label>
+            <input type="file" id="document_file" name="document_file" required>
 
             <button type="submit">Subir Documento</button>
         </form>
 
         <hr>
 
-        <p><a href="<?php echo $base_path; ?>/logout">Cerrar Sesión</a></p>
+        <p><a href="<?php echo $base_path; ?>/logout" class="button" style="background-color: #6c757d;">Cerrar Sesión</a></p>
     </div>
 </body>
 </html>

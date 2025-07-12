@@ -1,3 +1,6 @@
+blockchain
+
+#################### code #################################
 import hashlib
 import time
 
@@ -42,3 +45,5 @@ blockchain.add_block("Transacción 2")
 # Imprimir los bloques
 for block in blockchain.chain:
     print(f"Índice: {block.index}, Hash: {block.hash}, Datos: {block.data}")
+
+#################### code #################################
