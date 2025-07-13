@@ -33,14 +33,11 @@ if ($request_uri === '/') {
     } else {
         echo "<p><a href='" . $base_path . "/login'>Iniciar Sesión</a> | <a href='" . $base_path . "/register'>Registrarse</a></p>";
     }
-}
-elseif ($request_uri === '/register') {
+} elseif ($request_uri === '/register') {
     require_once '../views/register.php';
-}
-elseif ($request_uri === '/login') {
+} elseif ($request_uri === '/login') {
     require_once '../views/login.php';
-}
-elseif ($request_uri === '/dashboard') {
+} elseif ($request_uri === '/dashboard') {
     if (!isset($_SESSION['user_id'])) {
         header("Location: " . $base_path . "/login");
         exit();
@@ -51,8 +48,7 @@ elseif ($request_uri === '/dashboard') {
     $documents = $document_model->findByUserId($_SESSION['user_id']);
 
     require_once '../views/dashboard.php';
-}
-elseif ($request_uri === '/uploads') {
+} elseif ($request_uri === '/uploads') {
     if (!isset($_SESSION['user_id'])) {
         header("Location: " . $base_path . "/login");
         exit();
@@ -63,7 +59,6 @@ elseif ($request_uri === '/uploads') {
         $user_id = $_SESSION['user_id'];
         $document_title = $_POST['document_title'] ?? 'Sin título';
         $document_category = $_POST['document_cat'] ?? 'General';
-       
 
 
         $file = $_FILES['document_file'];
@@ -75,22 +70,22 @@ elseif ($request_uri === '/uploads') {
             'image/png',
             'application/msword', // .doc
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
-            'text/plain',                 // Para .txt y código genérico
-            'text/javascript',            // Para .js
-            'application/javascript',     // Alternativa para .js
-            'application/x-python',       // Para .py
-            'text/x-python',              // Alternativa común para .py
-            'text/html',                  // Para .html
-            'text/css',                   // Para .css
-            'application/sql',            // Para .sql
-            'text/x-sql',                 // Alternativa común para .sql
-            'application/json',           // Para .json
-            'application/xml',            // Para .xml
-            'text/xml',                   // Alternativa para .xml
-            'application/x-cbr',          // Para .cbr
-            'application/x-rar-compressed', // Alternativa para .cbr
-            'application/x-cbz',          // Para .cbz
-            'application/zip',            // Alternativa para .cbz (si .cbz usa zip)
+            'text/plain',                                // Para .txt y código genérico
+            'text/javascript',                           // Para .js
+            'application/javascript',                    // Alternativa para .js
+            'application/x-python',                      // Para .py
+            'text/x-python',                             // Alternativa común para .py
+            'text/html',                                 // Para .html
+            'text/css',                                  // Para .css
+            'application/sql',                           // Para .sql
+            'text/x-sql',                                // Alternativa común para .sql
+            'application/json',                          // Para .json
+            'application/xml',                           // Para .xml
+            'text/xml',                                  // Alternativa para .xml
+            'application/x-cbr',                         // Para .cbr
+            'application/x-rar-compressed',              // Alternativa para .cbr
+            'application/x-cbz',                         // Para .cbz
+            'application/zip',                           // Alternativa para .cbz (si .cbz usa zip)
             // Tipos para Excel
             'application/vnd.ms-excel', // .xls
             'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
@@ -154,8 +149,7 @@ elseif ($request_uri === '/uploads') {
 
     header("Location: " . $base_path . "/dashboard");
     exit();
-}
-elseif ($request_uri === '/logout') {
+} elseif ($request_uri === '/logout') {
     session_unset();
     session_destroy();
     header("Location: " . $base_path . "/login");
@@ -463,6 +457,10 @@ elseif (preg_match('/^\/edit_excel_document\/(\d+)$/', $request_uri, $matches)) 
                     $_SESSION['upload_message'] = "Error al leer el archivo Excel: " . $e->getMessage();
                     header("Location: " . $base_path . "/dashboard");
                     exit();
+                } catch (\Exception $e) { // Capturar cualquier otra excepción genérica de PhpSpreadsheet
+                    $_SESSION['upload_message'] = "Ocurrió un error inesperado al cargar el Excel: " . $e->getMessage();
+                    header("Location: " . $base_path . "/dashboard");
+                    exit();
                 }
             } else {
                 http_response_code(404);
@@ -525,7 +523,7 @@ elseif ($request_uri === '/update_excel_document' && $_SERVER['REQUEST_METHOD'] 
 
                     // Escribir los datos recibidos del formulario en la hoja
                     // Nota: Esto escribirá solo los datos que fueron enviados.
-                    // Los datos no presentados en el formulario (fuera del rango leído inicialmente) se perderán.
+                    // Los datos no presentados en el formulario (fuera del rango leído inicialmente) se perderán si no se manejan de forma más avanzada.
                     $sheet->fromArray($excel_data_posted, NULL, 'A1');
 
                     // Determinar el tipo de escritor basado en el tipo MIME original o extensión
@@ -534,7 +532,7 @@ elseif ($request_uri === '/update_excel_document' && $_SERVER['REQUEST_METHOD'] 
                     if ($originalExtension === 'xlsx') {
                         $writerType = \PhpOffice\PhpSpreadsheet\IOFactory::WRITER_XLSX;
                     } elseif ($originalExtension === 'xls') {
-                        $writerType = \PhpOffice\PhpSpreadsheet\IOFactory::WRTERY_XLS; // Error tipográfico aquí
+                        $writerType = \PhpOffice\PhpSpreadsheet\IOFactory::WRITER_XLS; // **CORRECCIÓN: WRITER_XLS, no WRTERY_XLS**
                     } else {
                         // Fallback, aunque ya validamos el tipo MIME antes
                         $_SESSION['upload_message'] = "Error: Extensión de archivo Excel no reconocida para guardar.";

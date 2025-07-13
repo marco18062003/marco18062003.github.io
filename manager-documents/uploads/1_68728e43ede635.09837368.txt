@@ -1,0 +1,35 @@
+manager-documents/
+├── public/
+│   ├── index.php                 <-- Controlador frontal principal (maneja todas las solicitudes)
+│   ├── css/
+│   │   └── style.css             <-- Hojas de estilo CSS
+│   ├── js/
+│   │   └── main.js               <-- Scripts JavaScript (para el modal de contraseña, tabs, etc.)
+│   └── uploads/                  <-- **¡IMPORTANTE!** Aquí se guardarán los documentos subidos
+│       └── .gitkeep              <-- (Archivo vacío para que Git mantenga la carpeta)
+├── app/
+│   ├── config/
+│   │   ├── db_config.php         <-- Configuración de la base de datos
+│   │   └── app_config.php        <-- Otras configuraciones (base_path, tipos de archivo, etc.)
+│   ├── controllers/
+│   │   ├── AuthController.php    <-- Lógica para login, logout, registro
+│   │   ├── DocumentController.php<-- Lógica para subir, ver, editar, proteger, eliminar documentos
+│   │   └── UserController.php    <-- Lógica para perfil de usuario (si aplica)
+│   ├── models/
+│   │   ├── BaseModel.php         <-- Clase base para interactuar con la DB
+│   │   ├── User.php              <-- Modelo para la tabla 'users'
+│   │   └── Document.php          <-- Modelo para la tabla 'documents'
+│   ├── views/
+│   │   ├── dashboard.php         <-- Tu archivo actual (muestra interfaz principal, subida, docs)
+│   │   ├── login.php             <-- Vista para el formulario de login
+│   │   ├── register.php          <-- Vista para el formulario de registro (si aplica)
+│   │   ├── error404.php          <-- Página de error 404 personalizada
+│   │   └── components/           <-- Elementos reutilizables de la UI (footer, header, etc.)
+│   │       ├── header.php
+│   │       └── footer.php
+│   └── routes.php                <-- Define cómo las URLs se mapean a los controladores
+├── vendor/                       <-- Si usas Composer (dependencias de PHP)
+├── .htaccess                     <-- Reglas de reescritura de URL para Apache
+├── .env                          <-- Variables de entorno (credenciales sensibles, etc.)
+├── .gitignore                    <-- Archivos y carpetas a ignorar por Git
+└── README.md                     <-- Documentación del proyecto
