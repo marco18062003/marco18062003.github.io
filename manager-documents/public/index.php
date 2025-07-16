@@ -93,7 +93,7 @@ if ($request_uri === '/') {
             // porque es demasiado permisivo. Preferimos que finfo_file detecte el tipo real.
         ];
 
-        $max_file_size = 5 * 1024 * 1024; // 5 MB
+        $max_file_size = 50 * 1024 * 1024; // 50 MB
 
         if ($file['error'] !== UPLOAD_ERR_OK) {
             $_SESSION['upload_message'] = "Error al subir el archivo: " . $file['error'] . ". Código: " . $file['error']; // Añadimos el código de error para depuración

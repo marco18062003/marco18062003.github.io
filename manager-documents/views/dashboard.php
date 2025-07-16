@@ -414,6 +414,8 @@ if (!empty($upload_message_html) && $active_tab == 'documents') { // Si ya se es
         }
         .modal .btn-save { background-color: #007bff; }
         .modal .btn-save:hover { background-color: #0056b3; }
+        .modal .btn-verify { background-color: #17a2b8; } /* Nuevo estilo para verificar */
+        .modal .btn-verify:hover { background-color: #138496; }
         .modal .btn-remove { background-color: #dc3545; margin-top: 15px; }
         .modal .btn-remove:hover { background-color: #c82333; }
         .modal .btn-cancel { background-color: #6c757d; margin-top: 15px; }
@@ -534,7 +536,7 @@ if (!empty($upload_message_html) && $active_tab == 'documents') { // Si ya se es
                 <div class="form-group">
                     <label for="document_file">Seleccionar Archivo:</label>
                     <input type="file" id="document_file" name="document_file" required
-                            accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.json,.xml,.html,.css,.js,.py,.sql,.cbr,.cbz">
+                                accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.json,.xml,.html,.css,.js,.py,.sql,.cbr,.cbz">
                     <small class="form-text-help">Formatos permitidos: PDF, Word, Excel, PowerPoint, TXT, ZIP, código, cómics. (Máx. 10MB)</small>
                 </div>
 
@@ -548,8 +550,8 @@ if (!empty($upload_message_html) && $active_tab == 'documents') { // Si ya se es
                 <input type="hidden" name="tab" value="documents"> <div class="form-group">
                     <label for="search_query">Buscar por Título o Categoría:</label>
                     <input type="text" id="search_query" name="search_query"
-                            placeholder="Ingresa palabra clave..."
-                            value="<?php echo htmlspecialchars($search_query); ?>">
+                                placeholder="Ingresa palabra clave..."
+                                value="<?php echo htmlspecialchars($search_query); ?>">
                     <small class="form-text-help">Ej: "informe 2023", "contrato legal", "proyecto".</small>
                 </div>
                 <button type="submit" class="btn-search">Buscar</button>
@@ -586,11 +588,11 @@ if (!empty($upload_message_html) && $active_tab == 'documents') { // Si ya se es
                                 <td class="action-buttons" data-label="Acciones">
                                     <?php if ($doc['is_protected']): ?>
                                         <button type="button" class="button view"
-                                            onclick="openPasswordModal(<?php echo htmlspecialchars($doc['id']); ?>, '<?php echo htmlspecialchars(addslashes($doc['title'])); ?>', true, 'verify_password')">
+                                            onclick="openPasswordModal(<?php echo htmlspecialchars($doc['id']); ?>, '<?php echo htmlspecialchars(addslashes($doc['title'])); ?>', true, 'verify_password', 'view')">
                                             Ver (Protegido)
                                         </button>
                                         <button type="button" class="button download"
-                                            onclick="openPasswordModal(<?php echo htmlspecialchars($doc['id']); ?>, '<?php echo htmlspecialchars(addslashes($doc['title'])); ?>', true, 'verify_password')">
+                                            onclick="openPasswordModal(<?php echo htmlspecialchars($doc['id']); ?>, '<?php echo htmlspecialchars(addslashes($doc['title'])); ?>', true, 'verify_password', 'download')">
                                             Descargar (Protegido)
                                         </button>
                                     <?php else: ?>
@@ -630,7 +632,8 @@ if (!empty($upload_message_html) && $active_tab == 'documents') { // Si ya se es
             <form id="documentPasswordForm" action="" method="POST">
                 <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf_token); ?>">
                 <input type="hidden" name="document_id" id="modalDocumentId">
-                <input type="hidden" name="action_type" id="modalActionType"> <div id="passwordInputGroup" class="form-group">
+                <input type="hidden" name="action_type" id="modalActionType">
+                <input type="hidden" name="target_action" id="modalTargetAction"> <div id="passwordInputGroup" class="form-group">
                     <label for="document_access_password">Contraseña:</label>
                     <input type="password" id="document_access_password" name="document_access_password" required>
                 </div>
@@ -675,6 +678,7 @@ if (!empty($upload_message_html) && $active_tab == 'documents') { // Si ya se es
         const documentPasswordModal = document.getElementById('documentPasswordModal');
         const modalDocumentId = document.getElementById('modalDocumentId');
         const modalActionType = document.getElementById('modalActionType');
+        const modalTargetAction = document.getElementById('modalTargetAction'); // Referencia al nuevo input
         const modalTitle = document.getElementById('modalTitle');
         const passwordInputGroup = document.getElementById('passwordInputGroup');
         const confirmPasswordInputGroup = document.getElementById('confirmPasswordInputGroup');
@@ -684,10 +688,11 @@ if (!empty($upload_message_html) && $active_tab == 'documents') { // Si ya se es
         const removePasswordButton = document.getElementById('removePasswordButton');
         const documentPasswordForm = document.getElementById('documentPasswordForm');
 
-        function openPasswordModal(docId, docTitle, currentProtectionStatus, action) {
+        function openPasswordModal(docId, docTitle, currentProtectionStatus, action, targetAction = '') {
             documentPasswordModal.style.display = 'flex'; // Usar flex para centrar
             modalDocumentId.value = docId;
             modalActionType.value = action;
+            modalTargetAction.value = targetAction; // Establecer la acción objetivo (view/download)
             documentAccessPassword.value = ''; // Limpiar campos
             documentConfirmPassword.value = '';
 
@@ -713,7 +718,7 @@ if (!empty($upload_message_html) && $active_tab == 'documents') { // Si ya se es
                     }
                 };
                 documentAccessPassword.onkeyup = function() { // También al cambiar la primera
-                     if (documentAccessPassword.value !== documentConfirmPassword.value) {
+                   if (documentAccessPassword.value !== documentConfirmPassword.value) {
                         documentConfirmPassword.setCustomValidity("Las contraseñas no coinciden.");
                     } else {
                         documentConfirmPassword.setCustomValidity("");
@@ -722,40 +727,41 @@ if (!empty($upload_message_html) && $active_tab == 'documents') { // Si ya se es
 
             } else if (action === 'verify_password') {
                 modalTitle.innerText = `Acceder a "${docTitle}" (Protegido)`;
-                documentAccessPassword.placeholder = 'Ingresa la contraseña';
-                documentAccessPassword.removeAttribute('readonly');
+                documentAccessPassword.placeholder = 'Ingresa la Contraseña';
+                documentAccessPassword.removeAttribute('readonly'); // Asegurarse de que sea editable
                 documentAccessPassword.setAttribute('required', 'required');
-                confirmPasswordInputGroup.style.display = 'none';
+                confirmPasswordInputGroup.style.display = 'none'; // Ocultar confirmación
                 documentConfirmPassword.removeAttribute('required');
-                modalSubmitButton.innerText = 'Acceder';
+                modalSubmitButton.innerText = 'Verificar Contraseña';
                 modalSubmitButton.classList.remove('btn-save');
-                modalSubmitButton.classList.add('btn-verify'); // Puedes añadir un estilo diferente si quieres
-                removePasswordButton.style.display = 'none';
+                modalSubmitButton.classList.add('btn-verify'); // Nuevo estilo para el botón de verificar
+                removePasswordButton.style.display = 'none'; // No mostrar "quitar protección" en verificación
                 documentPasswordForm.action = '<?php echo htmlspecialchars($base_path); ?>/verify_document_access'; // Nueva ruta para verificación
             }
         }
 
         function closePasswordModal() {
             documentPasswordModal.style.display = 'none';
-            documentConfirmPassword.setCustomValidity(""); // Limpiar validación al cerrar
+            documentAccessPassword.setCustomValidity(""); // Limpiar validación
+            documentConfirmPassword.setCustomValidity(""); // Limpiar validación
         }
 
-        // Para cerrar el modal haciendo clic fuera de él
+        function removeDocumentProtection() {
+            if (confirm('¿Estás seguro de que quieres quitar la protección de este documento? No se requerirá contraseña para acceder.')) {
+                // Configurar el formulario para enviar la acción de desproteger
+                documentPasswordForm.action = '<?php echo htmlspecialchars($base_path); ?>/unprotect_document';
+                modalActionType.value = 'unprotect';
+                // No se necesita contraseña para desproteger desde aquí, pero se podría enviar una para re-autenticar si se desea
+                documentAccessPassword.removeAttribute('required');
+                documentConfirmPassword.removeAttribute('required');
+                documentPasswordForm.submit();
+            }
+        }
+
+        // Cerrar el modal haciendo clic fuera de él
         window.onclick = function(event) {
             if (event.target == documentPasswordModal) {
                 closePasswordModal();
-            }
-        };
-
-        function removeDocumentProtection() {
-            if (confirm('¿Estás seguro de que quieres quitar la protección de contraseña de este documento?')) {
-                modalActionType.value = 'remove';
-                // Aquí enviamos el formulario, pero sin contraseña
-                // Puedes redirigir o hacer un submit AJAX
-                documentPasswordForm.action = '<?php echo htmlspecialchars($base_path); ?>/unprotect_document'; // Nueva ruta para desproteger
-                documentAccessPassword.removeAttribute('required'); // No se necesita contraseña para quitar
-                documentConfirmPassword.removeAttribute('required');
-                documentPasswordForm.submit();
             }
         }
 
